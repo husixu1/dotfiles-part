@@ -1,0 +1,166 @@
+global !p
+
+def printf_expand_args(snip):
+    # now add so many "," as much as the amount of placeholders
+    amount_placeholders = snip.tabstops[1].current_text.count("%")
+    output = ""
+    # Add the amount of tabstops
+    for placeholder_index in range(3, amount_placeholders + 3):
+        output += f", ${placeholder_index}"
+
+    # convert them into tabstops
+    snip.expand_anon(output)
+endglobal
+
+snippet inc "#include < ... >" b
+#include <${1:...}>$0
+endsnippet
+
+snippet incl "#include '...' " b
+#include "${1:...}"$0
+endsnippet
+
+snippet main "main() without args" b
+int main(){
+    ${0:/* code */}
+    return 0;
+}
+endsnippet
+
+snippet maina "main() with args" b
+int main(int argc, char *argv[]){
+    ${0:/* code */}
+}
+endsnippet
+
+snippet for "Multi-Line Loop" b
+for(${4:${1:int} ${2:i}=${3:0}}; ${6:$2 < ${5:Max}}; ${7:++$2}){
+    ${0:/* code */}
+}
+endsnippet
+
+snippet fors "Single-Line Loop" b
+for(${3:${1:int} ${2:i}=0}; ${5:$2 < ${4:Max}}; ${6:++$2})
+    ${0:/* code */}
+endsnippet
+
+snippet while "While Loop" b
+while(${1:...}){
+    ${0:/* code */}
+}
+endsnippet
+
+snippet whiles "Single-Line While" b
+while(${1:...})
+    ${0:/* code */}
+endsnippet
+
+# switch case - switch
+snippet swit "Switch - Case" b
+switch(${1:...}){
+    ${2:/* cases */}
+    ${3:default:
+        ${4:/* code */}
+        break;}
+}$0
+endsnippet
+
+# switch case - case
+snippet case "Switch - Case" b
+case ${1:/* condition */}:
+    ${2:/* code */}
+    break;
+$0
+endsnippet
+
+snippet struct "struct typedef" b
+typedef struct _${1:name}{
+    ${2:/* data */}
+}$1;$0
+endsnippet
+
+snippet union "union typedef" b
+typedef union _${1:name}{
+    ${2:/* data */}
+}$1;$0
+endsnippet
+
+# snippet printf "C-printf function" i
+# printf("${1:%s}\n"${1/([^%]|%%)*(%.)?.*/(?2:, :\);)/}$2${1/([^%]|%%)*(%.)?.*/(?2:\))/}$0
+# endsnippet
+#
+post_jump "printf_expand_args(snip)"
+snippet "printf" "printf with auto-expand args" wr
+printf("$1\n"$2)
+endsnippet
+
+snippet ifndef "C guard"
+#ifndef ${1:`!p snip.rv = "_" + "".join([c.upper() if c.isalnum() else "_" for c in fn]) + "_"`}
+#define $1
+
+$0
+
+#endif // $1
+endsnippet
+
+snippet /m "inline dox comment" A
+///< @brief $0
+endsnippet
+
+snippet /n "comment with name" A
+//[`whoami`] $0
+endsnippet
+
+snippet //m "inline dox comment" A
+/**< @brief $1 */ $0
+endsnippet
+
+snippet //n "comment with name" A
+/* [`whoami`] $1 */ $0
+endsnippet
+
+snippet file "file declarration"
+/**
+ * @file `!p snip.rv = snip.fn`
+ * @brief ${2: introduction}
+ *
+ * @details
+ * ${3: detailed introduction}
+ *
+ * @date `date +%F`
+ * @author ${4:Sixu Hu}
+**/
+endsnippet
+
+snippet filec "file declarration with copyright"
+/**
+ * @file `!p snip.rv = snip.fn`
+ * @brief ${6: introduction}
+ *
+ * @details
+ * ${7: detailed introduction}
+ *
+ * @date `date +%F`
+ * @author ${2:Sixu Hu}
+ *
+ * @copyright
+ * Copyright `date +%Y` $2 <${3:husixu1@hotmail.com}>
+ * <br><br>
+ * This file is part of ${4:program}.
+ * <br><br>
+ * $4 free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <br><br>
+ * $4 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with ${5:$4}.  If not, see <http://www.gnu.org/licenses/>.
+**/
+
+endsnippet
+
+# vim: set expandtab:

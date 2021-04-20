@@ -1,0 +1,40 @@
+extends c
+
+snippet fori "Iteration Loop"
+for(${1:auto ${2:iterator}} : ${3:container}){
+    ${0:/* code */}
+}
+endsnippet
+
+snippet foris "Single-Line iteration Loop"
+for(${1:auto ${2:iterator}} : ${3:container})
+    ${0:/* code */}
+endsnippet
+
+snippet class "C++ Class" b
+class ${1:AClass}${2:: ${3:public} ${4:BClass}}{
+private:
+    ${3:/* private */}
+public:
+    $1();
+    $1(const $1 &);
+    $1 &operator=(const $1 &);
+    virtual ~$1();
+    ${4:/* public */}
+}; // class $1
+endsnippet
+
+snippet templ "C++ template" b
+template <typename $1>$0
+endsnippet
+
+snippet name "C++ namespace" b
+namespace ${1:name}{
+${2:/* data */}
+} //namespace $1
+endsnippet
+
+snippet using "using namespace" b
+using namespace ${1:std};
+$0
+endsnippet

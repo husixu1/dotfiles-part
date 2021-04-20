@@ -1,0 +1,4 @@
+{
+    // Use ALE for linting
+    "diagnostic.enable": false
+}

@@ -1,0 +1,69 @@
+# Here's the story. Initially I tried to use UltiSnips#Anon to do anonymous
+# Snippet expansion for pairs, and use inoremap to trigger. Unfortunately
+# ultisnips cannot handle nested Anonymouse snippet very well, and it broke when
+# integrated with coc expansion (which changes the ultisnips tabstop position)
+#
+# Then I tried to use a normal snippet, but use inoremap to trigger a function
+# and decide whether to call UltiSnips#ExpandSnippet, but I found that that
+# doesn't work either due to this function won't work when called immediately
+# after inserting the opening pairs (when the opening pairs are just inserted
+# into vim's typeahead buffer). It'll will cause ExpandSnippets malfunction.
+#
+# So at last I need to write the snippets for pairs in this file
+# and use ultisnips context to decide whether to expand. Meanwhile, I'll mask
+# these opening pairs in our tab key handle function to avoid expanding them
+# using the <Tab> key (which is enabled by ultisnips by default and cannot
+# disabled using UltiSnips solely).
+global !p
+
+space = re.compile(r'\s')
+alnum = re.compile(r'\w')
+
+def should_expand(snip, c, e):
+    line = bytearray(snip.buffer[snip.line], 'utf-8')
+
+    if snip.column < 0:
+        return False
+    elif snip.column == 0 or \
+         space.match(chr(line[snip.column - 1])) or \
+         c != e or ( \
+            c == e and not alnum.match(chr(line[snip.column - 1])) or ( \
+                chr(line[snip.column - 1]) == c and \
+                snip.column < len(line) - 1 and \
+                chr(line[snip.column + 1]) == c)):
+        return True
+    return False
+
+endglobal
+
+context "should_expand(snip, '(', ')')"
+snippet ( "(...)" iA
+(${1:${VISUAL}})$0
+endsnippet
+
+context "should_expand(snip, '[', ']')"
+snippet [ "[...]" iA
+[${1:${VISUAL}}]$0
+endsnippet
+
+context "should_expand(snip, '{', '}')"
+snippet { "{...}" iA
+{${1:${VISUAL}}}$0
+endsnippet
+
+context "should_expand(snip, '\'', '\'')"
+snippet ' "'...'" iA
+'${1:${VISUAL}}'$0
+endsnippet
+
+context "should_expand(snip, '\"', '\"')"
+snippet " "..." iA
+"${1:${VISUAL}}"$0
+endsnippet
+
+context "should_expand(snip, '`', '`')"
+snippet ` "`...`" iA
+\`${1:${VISUAL}}\`$0
+endsnippet
+
+# vim: set expandtab:

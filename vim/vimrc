@@ -1,0 +1,994 @@
+" Determine whether running on termux
+let g:Termux = 0
+if has('unix')
+    call system("command -v termux-setup-storage")
+    if v:shell_error == 0
+        let g:Termux = 1
+    endif
+endif
+
+let g:WSL = 0
+if exists("$WSL_DISTRO_NAME")
+    let g:WSL = 1
+endif
+
+set encoding=utf-8  " required for correctly displaying symbols
+set rtp^=~/.vim     " force '~/.vim'  on windows
+
+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+"%%%%%%%%% Vim Plugin Settings %%%%%%%%%%%%%%%
+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+"%%%%%%%%% vim-plug %%%%%%%%%%%%%%%%%%%%%%%%%%
+set nocompatible              " required
+
+let g:plug_threads = 8
+let g:plug_timeout = 60
+let g:plug_retries = 2
+let g:plug_window = 'vertical topleft new'
+
+"%%%%%%%%% Post-update hooks %%%%%%%%%%%%%%%%%
+function! InstallFont(info)
+    if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
+        silent! !bash ./install.sh
+    endif
+endfunction this
+
+function! BuildYCM(info)
+    if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
+        if has('unix') && ! g:Termux || has('win32')
+            silent! !python3 ./install.py --clangd-completer --js-completer --java-completer
+        elseif g:Termux
+            silent! !python3 ./install.py --clang-completer --system-libclang
+        endif
+    endif
+endfunction
+
+function! BuildVimProc(info)
+    if a:info.status == 'installed' || a:info.force
+        silent! !make
+    endif
+endfunction
+
+function! UpdateCoc(info)
+    if a:info.status == 'updated'
+        CocUpdate
+    endif
+endfunction
+
+"%%%%%%%%% plugs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+call plug#begin('~/.vim/plugged')
+
+Plug 'ryanoasis/vim-devicons'
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'powerline/fonts', { 'do': function('InstallFont') }
+Plug 'idanarye/vim-merginal'
+
+"Plug 'nathanaelkane/vim-indent-guides'     " conflicts with vista.vim
+" switch back once #134 is fixed
+Plug 'husixu1/vim-indent-guides'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'severin-lemaignan/vim-minimap'
+Plug 'powerman/vim-plugin-AnsiEsc'
+Plug 'guns/xterm-color-table.vim'
+"Plug 'kshenoy/vim-signature'                " TODO: replace with coc-bookmark?
+
+Plug 'wellle/context.vim'
+" visual -------------------
+" --------------- functional
+
+Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+"Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+Plug 'liuchengxu/vista.vim'
+Plug 'yaroot/vissort'
+Plug 'junegunn/vim-easy-align'
+
+Plug 'sirver/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'husixu1/auto-pairs'
+
+"Plug 'vim-syntastic/syntastic'
+Plug 'dense-analysis/ale'   "replaces syntastic
+"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }   " needs manual compile if auto compile failed. requires compiledb (pip install compiledb)
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }            " only for clang-based Ycm, not clangd-based
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': function('UpdateCoc')}
+Plug 'husixu1/vim-fusiontab'
+
+Plug 'haya14busa/incsearch.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'pseewald/vim-anyfold'
+
+Plug 'farmergreg/vim-lastplace'
+Plug 'mbbill/undotree'
+
+Plug 'cohama/agit.vim'
+Plug 'embear/vim-localvimrc'
+
+Plug 'Chiel92/vim-autoformat'
+Plug 'vim-scripts/DoxygenToolkit.vim', { 'for': 'c,cpp,python,javascript,java' }
+
+"Plug 'Shougo/vimproc', { 'do':function('BuildVimProc') }       " vimshell dependency
+"Plug 'Shougo/vimshell.vim'                                     " vim suports terminal natively now so no shell needed
+"Plug 'vim-scripts/Conque-GDB'
+
+Plug 'dyng/ctrlsf.vim'                                          " needs ack installed (pacman -S ack)
+"Plug 'ronakg/quickr-preview.vim'                               " cause ycm jump bug
+Plug 'vim-scripts/a.vim'
+
+"Plug 'craigemery/vim-autotag'                                  " needs ctags
+Plug 'ludovicchabant/vim-gutentags'                             " replace autotag, needs ctags
+
+Plug 'alx741/vinfo'
+
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"Plug 'junegunn/fzf.vim'
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }  " replaces fzf.vim, requires gtags (Gnu Global), python-pygments
+
+Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}         " this plugin causes bug when used inside .pyenv/versions subdirectories
+
+" --------------- functional
+" language support ---------
+
+" polyglot causes conflict and harms performance. Use separate packages instead
+"Plug 'sheerun/vim-polyglot'
+
+"Plug 'vim-jp/vim-cpp', { 'for': 'c,cpp' }
+Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'c,cpp' }     " with c++11/14/17 support
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+Plug 'mxw/vim-jsx', { 'for': 'javascript' }
+Plug 'mtscout6/vim-tagbar-css', { 'for': 'css' }
+Plug 'lvht/tagbar-markdown', {'for': 'markdown'}                " needs php in $PATH
+Plug 'lervag/vimtex', {'for': 'tex,latex'}
+Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex,latex'}
+"Plug 'vim-scripts/bash-support.vim', { 'for': 'sh,bash' }       " key conflict with coc.nvim
+"Plug 'shime/vim-livedown', { 'for': 'markdown'}                 " needs npm install -g livedown
+Plug 'suan/vim-instant-markdown', { 'for': 'markdown' }         " needs npm install -g instant-markdown-d
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+Plug 'rhysd/vim-grammarous'                                     " natural language grammar checker
+Plug 'sukima/vim-tiddlywiki', { 'for' : 'tiddlywiki'}           " tiddlywiki support
+Plug 'dylon/vim-antlr', { 'for' : 'antlr3,antlr4'}              " antlr support
+Plug 'justinmk/vim-syntax-extra', { 'for': 'yacc,lex' }         " flex and bison highlight support
+Plug 'dag/vim-fish', {'for': 'fish'}
+
+call plug#end()            " required
+filetype plugin indent on  " required
+
+" TODO A fuzzy plugin to input various commands / activate key bindings
+" (maybe vim-which-key?)
+
+"%%%%%%%%% NerdTree %%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+if has('unix') && ! g:Termux
+    let g:NERDTreeWinSize = 31
+elseif g:Termux
+    let g:NERDTreeWinSize = 21
+endif
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_open_on_console_startup = 0
+
+"%%%%%%%%% Vim NerdTree Syntax Highlight %%%%%
+let g:NERDTreeLimitedSyntax = 1
+
+"%%%%%%%%% YouCompleteMe %%%%%%%%%%%%%%%%%%%%%
+"let g:ycm_global_ycm_extra_conf = '~/.vim/custom/ycm_extra_conf.py'
+"let g:ycm_extra_conf_globlist = ['.']
+"let g:ycm_python_binary_path = 'python'
+"let g:ycm_autoclose_preview_window_after_completion = 0
+"let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_add_preview_to_completeopt = 1
+"let g:ycm_key_list_select_completion = ['<C-j>', '<S-j>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<C-k>', '<S-k>', '<Up>']
+"let g:ycm_key_invoke_completion = '<C-Space>'
+"let g:ycm_complete_in_comments = 1
+"let g:ycm_confirm_extra_conf = 0
+"" disables the check of ycm and use syntastic insted
+"let g:ycm_show_diagnostics_ui = 0
+"let g:ycm_enable_diagnostic_signs = 0
+"let g:ycm_enable_diagnostic_highlighting = 0
+"
+"let g:ycm_error_symbol = "-✗"
+"let g:ycm_warning_symbol = "-⚠"
+"
+"" Add triggers to ycm for vimtex autocompletion
+"if !exists("g:vimtex#re#youcompleteme")     "to avoid error when ycm not installed
+"    let g:ycm_semantic_triggers = {
+"                \  'tex'  : ['\\', '{']
+"                \ }
+"else
+"    let g:ycm_semantic_triggers = {
+"                \  'tex'  : g:vimtex#re#youcompleteme
+"                \ }
+"endif
+
+"%%%%%%%%% Coc.nvim %%%%%%%%%%%%%%%%%%%%%%%%%%
+" auto install extensions
+let g:coc_global_extensions = [
+            \ 'coc-marketplace',
+            \ 'coc-calc', 'coc-cmake', 'coc-clangd', 'coc-css',
+            \ 'coc-java', 'coc-json', 'coc-julia', 'coc-lua',
+            \ 'coc-pyright', 'coc-sh', 'coc-fish', 'coc-sql', 'coc-svg',
+            \ 'coc-tsserver', 'coc-yaml', 'coc-xml',
+            \ 'coc-vimtex', 'coc-ultisnips']
+let g:coc_config_home = $HOME . '/.vim/custom'
+" auto show signature help
+autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+
+"%%%%%%%%% FusionTab %%%%%%%%%%%%%%%%%%%%%%%%%
+let g:fusiontab_noexpand_after = {
+            \ 'ultisnips' : ['(', '[', '{', '"', "'", '`'],
+            \ 'coc' : [],
+            \ }
+
+"%%%%%%%%% UltiSnips %%%%%%%%%%%%%%%%%%%%%%%%%
+set rtp+=~/.vim/custom
+let g:UltiSnipsUsePythonVersion = 3
+let g:UltiSnipsSnippetDirectories = ["Snips"]
+let g:UltiSnipsEnableSnipMate = 0
+
+" Defines a series of custom <Plug> keys for calling from function
+let g:UltiSnipsExpandTrigger        = "<Plug>(ultisnips_expand)"
+let g:UltiSnipsJumpForwardTrigger   = "<Plug>(ultisnips_expand)"
+let g:UltiSnipsJumpBackwardTrigger  = "<Plug>(ultisnips_backward)"
+let g:UltiSnipsListSnippets         = "<Plug>(ultisnips_list)"
+let g:UltiSnipsRemoveSelectModeMappings = 0
+
+let g:UltiSnipEditSplit = "normal"
+
+"%%%%%%%%% Airline %%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#ale#enabled = 1                "ale support
+"Uncomment this if termux does not support styling
+"if g:System_ == 'Linux'
+let g:airline_powerline_fonts = 1
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols = {}
+let g:airline_symbols.linenr = 'Ξ'
+"elseif g:System_ == 'Termux'
+"    let g:airline_powerline_fonts = 0
+"    let g:airline_left_sep = ''
+"    let g:airline_left_alt_sep = ''
+"    let g:airline_right_sep = ''
+"    let g:airline_right_alt_sep = ''
+"    let g:airline_symbols = {}
+"    let g:airline_symbols.crypt = '🔒'
+"    let g:airline_symbols.linenr = '␊'
+"    let g:airline_symbols.linenr = '␤'
+"    let g:airline_symbols.maxlinenr = '☰'
+"    let g:airline_symbols.branch = '⎇'
+"    let g:airline_symbols.paste = 'ρ'
+"    let g:airline_symbols.spell = 'Ꞩ'
+"    let g:airline_symbols.notexists = '∄'
+"    let g:airline_symbols.whitespace = 'Ξ'
+"endif
+let g:airline#extensions#whitespace#enabled = 1
+
+"%%%%%%%% Undo Tree %%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:undotree_WindowLayout = 2
+let g:undotree_ShortIndicators = 1
+let g:undotree_HelpLine = 0
+
+"%%%%%%%% Localvimrc %%%%%%%%%%%%%%%%%%%%%%%%%
+let g:localvimrc_ask = 0    " Potentially dangerous but whatever
+
+"%%%%%%%% Vim Indent-guides %%%%%%%%%%%%%%%%%%
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_color_change_percent = 1
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_default_mapping = 0
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_exclude_filetypes = [
+            \ 'help', 'nerdtree', 'vista', 'vista_kind' ]
+
+"%%%%%%%% Vim-Minimap %%%%%%%%%%%%%%%%%%%%%%%%
+let g:minimap_show='<NOP>'
+let g:minimap_update='<NOP>'
+let g:minimap_close='<NOP>'
+let g:minimap_toggle='<Leader>m'
+
+"%%%%%%%% Syntastic %%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_warning_symbol = "⚠"
+let g:syntastic_cpp_check_header = 1
+let g:syntastic_mode_map = {
+            \ "mode": "active",
+            \ "passive_filetypes": ["asm", "tex"] }
+"let g:syntastic_cpp_checkers=["cppcheck"]
+let g:syntastic_cpp_gcc_quiet_messages= {
+            \ "regex":  "No such file or directory" }
+let g:syntastic_c_gcc_quiet_messages= {
+            \ "regex":  "No such file or directory" }
+let g:syntastic_cuda_config_file = ".syntastic_cuda"
+let g:syntastic_c_config_file = ".syntastic_c"
+let g:syntastic_cpp_config_file = ".syntastic_cpp"
+let g:syntastic_sh_shellcheck_args = "-x" " to allow source another shell script
+
+"%%%%%%%% ALE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+"let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+"let g:ale_cursor_detail = 0    "show details when cursur over
+
+let g:ale_sign_error = "✗✗"
+let g:ale_sign_warning = "⚠"
+let g:ale_sign_info = "🛈"
+let g:ale_sign_style_error = "S✗"
+let g:ale_sign_style_warning = "S‼"
+
+let g:ale_linters = {
+            \ 'c': ['cc', 'clang', 'gcc', 'cppcheck'],
+            \ 'cpp': ['cc', 'clang', 'gcc', 'cppcheck'],
+            \ 'javascript': ['eslint'],
+            \ 'tex': ['chktex', 'lacheck'],
+            \ }
+let g:ale_linter_aliases = {
+            \ 'latex': 'tex'
+            \ }
+
+" C linter configs
+let g:ale_c_cc_options = '-Wall -Wextra -std=c17'
+let g:ale_c_gcc_options = '-Wall -Wextra -std=c17'
+let g:ale_c_clang_options = '-Wall -Wextra -std=c17'
+let g:ale_c_cppcheck_options = '--enable=all --inconclusive --std=c17'
+let g:ale_c_parse_compile_commands = 1
+
+" C++ linter configs
+let g:ale_cpp_cc_options = '-Wall -Wextra -std=c++20'
+let g:ale_cpp_gcc_options = '-Wall -Wextra -std=c++20'
+let g:ale_cpp_clang_options = '-Wall -Wextra -std=c++20'
+let g:ale_cpp_cppcheck_options = '--enable=all --inconclusive --std=c++20'
+
+" Python linter configs
+let g:ale_python_mypy_options = '--ignore-missing-imports --python-executable=python'
+
+"%%%%%% AutoPairs %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:AutoPairsSetKeymap = 0 " Let UltiSnips hadle paring, to get better experience
+let g:AutoPairsShortcutFastWrap = '<C-e>'
+let g:AutoPairsShortcutJump = '<NOP>'
+
+"%%%%%% Easymotion %%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:EasyMotion_move_highlight = 0
+let g:EasyMotion_do_mapping = 0 "disable default mapping to avoid conflict
+
+"%%%%%% incsearch %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:incsearch#auto_nohlsearch = 1
+let g:incsearch#separate_highlight = 1
+let g:incsearch#magic = '\v' " very magic, but do not cause probablility problem
+
+"%%%%%% TagBar %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:tagbar_left = 0
+let g:tagbar_iconchars = ['▶', '▼']
+let g:tagbar_sort = 0
+"autocmd VimEnter * nested :call tagbar#autoopen(1)
+"autocmd BufEnter * nested :call tagbar#autoopen(1)
+
+"%%%%%% Vista.vim %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:vista_sidebar_width = 40
+let g:vista#renderer#enable_icon = 1
+let g:vista#renderer#ctags = 'default'
+
+let g:vista_ignore_kinds = ['Variable']
+
+let g:vista#renderer#icons = {
+            \ 'label': ' ',
+            \ 'subsection': ' ',
+            \ 'section': ' ',
+            \ 'subsubsection': ' '
+            \ }
+
+" Use ctags by default, for some filetypes, use coc
+let g:vista_executive_for = {
+            \ 'yaml': 'coc',
+            \ 'python': 'coc',
+            \ }
+
+"%%%%%% ConqueGdb %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:ConqueGdb_SrcSplit = 'left'
+let g:ConqueGdb_Leader = '\'
+let g:ConqueGdb_Run = g:ConqueGdb_Leader . 'r'
+let g:ConqueGdb_Continue = g:ConqueGdb_Leader . 'c'
+let g:ConqueGdb_Next = g:ConqueGdb_Leader . 'n'
+let g:ConqueGdb_Step = g:ConqueGdb_Leader . 's'
+let g:ConqueGdb_Print = g:ConqueGdb_Leader . 'p'
+let g:ConqueGdb_ToggleBreak = g:ConqueGdb_Leader . 'b'
+let g:ConqueGdb_DeleteBreak = g:ConqueGdb_Leader . 'd'
+let g:ConqueGdb_Finish = g:ConqueGdb_Leader . 'f'
+let g:ConqueGdb_Backtrace = g:ConqueGdb_Leader . 't'
+
+"%%%%%% AnyFold %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+filetype plugin indent on   " required
+syntax on                   " required
+"let g:anyfold_activate = 1 " deprecated, use autocmd instead
+let g:anyfold_identify_comments = 0
+let g:anyfold_fold_toplevel = 0
+let g:anyfold_identify_comments = 1
+set foldmethod=syntax
+set foldlevel=0
+set foldlevelstart=10
+
+" enable anyfold by default
+augroup AnyFold
+    autocmd!
+    autocmd Filetype * AnyFoldActivate
+augroup END
+
+" disable anyfold for large files
+let g:LargeFile = 1000000 " file is large if size greater than 1MB
+autocmd BufReadPre,BufRead * let f=getfsize(expand("<afile>")) |
+            \ if f > g:LargeFile || f == -2 | call LargeFile() | endif
+function LargeFile()
+    augroup anyfold
+        autocmd!
+        autocmd Filetype * set foldmethod=indent " fall back to indent folding
+    augroup END
+endfunction
+
+"%%%%%% Context.vim %%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:context_enabled = 1
+let g:context_filetype_blacklist = []
+let g:context_add_mappings = 0
+let g:context_add_autocmds = 1
+let g:context_ellipsis_char = '·'
+let g:context_border_char = '━' "'─'
+let g:context_highlight_border = 'Comment'
+let g:context_highlight_tag = '<hide>'
+" let g:context_nvim_no_redraw = 1 " lazy update, may cause some issue
+" Use float/popup by defalut to avoid switching to contet window
+"let g:context_presenter =
+
+"%%%%%% Rainbow Parentheses %%%%%%%%%%%%%%%%%%
+let g:rbpt_colorpairs = [
+            \ ['brown',       'RoyalBlue3'],
+            \ ['Darkblue',    'SeaGreen3'],
+            \ ['darkgray',    'DarkOrchid3'],
+            \ ['darkgreen',   'firebrick3'],
+            \ ['darkcyan',    'RoyalBlue3'],
+            \ ['darkred',     'SeaGreen3'],
+            \ ['darkmagenta', 'DarkOrchid3'],
+            \ ['brown',       'firebrick3'],
+            \ ['gray',        'RoyalBlue3'],
+            \ ['black',       'SeaGreen3'],
+            \ ['darkmagenta', 'DarkOrchid3'],
+            \ ['Darkblue',    'firebrick3'],
+            \ ['darkgreen',   'RoyalBlue3'],
+            \ ['darkcyan',    'SeaGreen3'],
+            \ ['darkred',     'DarkOrchid3'],
+            \ ['red',         'firebrick3'],
+            \ ]
+let g:rbpt_max = 16
+let g:rbpt_loadcmd_toggle = 0
+
+"%%%%%% Vim-Signature %%%%%%%%%%%%%%%%%%%%%%%%
+let g:SignatureMarkTextHLDynamic = 1
+let g:SignaturePurgeConfirmation = 1
+
+"%%%%%% Doxygen Toolkit %%%%%%%%%%%%%%%%%%%%%%
+let g:DoxygenToolkit_commentType = "C++"
+
+"%%%%%% CtrlSF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:ctrlsf_mapping = {
+            \ "open"    : ["<CR>", "o"],
+            \ "openb"   : "O",
+            \ "split"   : "<C-O>",
+            \ "vsplit"  : "",
+            \ "tab"     : "t",
+            \ "tabb"    : "T",
+            \ "popen"   : "p",
+            \ "popenf"  : "P",
+            \ "quit"    : "q",
+            \ "next"    : "<C-J>",
+            \ "prev"    : "<C-K>",
+            \ "pquit"   : "q",
+            \ "loclist" : "",
+            \ "chgmode" : "M",
+            \ }
+let g:ctrlsf_auto_close = {
+            \ "normal" : 1,
+            \ "compact": 1
+            \ }
+let g:ctrlsf_auto_focus = {
+            \ "at" : "start"
+            \ }
+let g:ctrlsf_default_view_mode = 'normal'
+" default 'ag' > 'ack' > 'rg' > 'pt' > 'ack-grep'
+" let g:ctrlsf_ackprg = '/usr/bin/ag'
+
+"%%%%%%%%% vim-gutentags %%%%%%%%%%%%%%%%%%%%%
+let g:gutentags_project_root = ['.git', '.svn', '.hg', '.project']
+if has('win32')
+    let s:vim_tags = expand($localappdata . '/vim/tags')
+else
+    let s:vim_tags = expand($HOME . '/.cache/vim/tags')
+endif
+if !isdirectory(s:vim_tags)
+    silent! call mkdir(s:vim_tags, 'p')
+endif
+
+let g:gutentags_ctags_extra_args = [
+            \ '--tag-relative=yes',
+            \ '--fields=+ailmnS',
+            \ ]
+let g:gutentags_modules = [ 'ctags' , 'gtags_cscope' ]
+let gutentags_cache_dir = s:vim_tags.'/.LfCache/gtags'
+
+"%%%%%%%%% LeaderF %%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:Lf_ShortcutF = '<Leader>f'
+let g:Lf_ShortcutB = '<Leader>b'
+
+" gtag support
+let g:Lf_RootMarkers = ['.git', '.hg', '.svn', '.project']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+
+" vim-gutentags comatibility
+let g:Lf_CacheDirectory = s:vim_tags
+let g:Lf_GtagsAutoGenerate = 0
+let g:Lf_GtagsGutentags = 1
+
+"let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 0
+
+let g:Lf_WindowPosition = 'bottom'  "top/left/right/popup
+let g:Lf_WindowHeight = 0.30
+let g:Lf_StlSeparator = { 'left': '', 'right': '' }
+let g:Lf_SpinSymbols = ['🌘', '🌗', '🌖', '🌕', '🌔', '🌓', '🌒', '🌑']
+
+"%%%%%% Instant-markdown %%%%%%%%%%%%%%%%%%%%%
+let g:instant_markdown_slow = 1
+let g:instant_markdown_autostart = 0
+let g:instant_markdown_allow_unsafe_content = 1
+let g:instant_markdown_allow_external_content = 1
+let g:instant_markdown_mathjax = 1
+
+"%%%%%% Autoformat %%%%%%%%%%%%%%%%%%%%%%%%%%%
+"let g:formatters_c = ['astyle']
+"let g:formatters_cpp = ['astyle']
+"let g:formatdef_astyle = '"astyle"'
+let g:autoformat_autoindent = 0                 " disable fallback to vim indent
+let g:formatdef_clang = '"clang-format -style=file"'
+let g:formatters_c = ['clang']
+let g:formatters_cpp = ['clang']
+let g:formatters_cuda = ['clang']
+let g:formatters_haskell = ['stylish-haskell']
+let g:formatters_bash = ['shfmt']
+
+let g:formatters_python = ['autopep8']
+let g:formatdef_black = '"black --quiet --line-length 79 -"'
+let g:formatdef_yapf = '"yapf --style " . $HOME . "/.vim/custom/yapf.conf"'
+
+let g:formatters_tex = ['latexindent']
+let g:formatdef_latexindent = '"latexindent -l=" . $HOME . "/.vim/custom/latex_indentconfig.yaml -g /dev/null - 2>/dev/null"'
+
+"%%%%%% Vimtex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:vimtex_doc_handlers = ['VimTexDocHandler']
+let g:vimtex_view_general_viewer = 'okular'
+let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+let g:vimtex_view_general_options_latexmk = '--unique'
+" disable all mappings, to avoid conflict with other plugins
+let g:vimtex_mappings_enabled = 0
+let g:vimtex_imaps_enabled = 0
+let g:tex_flavor = 'latex'
+
+" disable indent in tabular/aligned environments. (undesired most of the time)
+let g:vimtex_indent_on_ampersands = 0
+
+" see https://github.com/lervag/vimtex/issues/585, for better log parsing and
+" more correct quickfix jumping location. requires pplatex.
+if executable('pplatex')
+    let g:vimtex_quickfix_method = 'pplatex'
+endif
+let g:vimtex_quickfix_autoclose_after_keystrokes = 3
+
+" add `vim --remote-silent +%l '%f'` to
+" Okular > Settings > Configure Okular > Editor > Command
+" And set `Editor` to `Custom Text Editor`
+" Then in okular _normal node_, use `Shift + Click` to do reverse search
+
+" let 'backend' be automatically detected here
+let g:vimtex_compiler_latexmk = {
+            \ 'background' : 1,
+            \ 'build_dir' : 'output',
+            \ 'callback' : 1,
+            \ 'continuous' : 1,
+            \ 'executable' : 'latexmk',
+            \ 'options' : [
+            \   '-verbose',
+            \   '-synctex=1',
+            \   '-file-line-error',
+            \   '-interaction=nonstopmode',
+            \ ],
+            \}
+let $TEXMFHOME = $HOME . '/texmf'
+
+"%%%%%% tex-conceal %%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:tex_conceal="abdgm"
+
+"%%%%%% bash-support %%%%%%%%%%%%%%%%%%%%%%%%%
+let g:BASH_InsertFileHeader='no'
+let g:BASH_Executable='bash'
+let g:BASH_Debugger='ddd'
+let g:BASH_LoadMenus='no'
+
+"%%%%%%%%% vim-fish %%%%%%%%%%%%%%%%%%%%%%%%%%
+autocmd FileType fish compiler fish
+autocmd FileType fish setlocal textwidth=80
+autocmd FileType fish setlocal foldmethod=expr
+
+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+"%%%%%%%%% Vim Custom Settings %%%%%%%%%%%%%%%
+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if has('unix') && !g:Termux
+    set shell=/bin/bash
+elseif g:Termux
+    set shell=/data/data/com.termux/files/usr/bin/bash
+endif
+
+" this option is neither nvim compatible nor fbterm compatible
+if !has('nvim') && !$TERM == 'fbterm'
+    set term=screen-256color
+endif
+
+"%%%%%% Appearence %%%%%%%%%%%%%%%%%%%%%%%%%%%
+if has('gui_running')
+    if has('win32')
+        set guifont=FuraCode\ NF:h14,Fira\ Code,monospace
+    elseif has('unix')
+        set guifont=Fira\ Code\ 14,monospace
+    endif
+endif
+colo wombat256
+set cursorline
+"set cursorcolumn
+set number
+set relativenumber
+set incsearch        " search when you type
+set hlsearch
+set laststatus=2     " always show the status line
+set fillchars+=vert:│
+set colorcolumn=80
+
+" load the doxygen syntax and use enhanced highlight
+let g:load_doxygen_syntax = 1
+"let g:doxygen_enhanced_color = 1
+
+" determine current window class and set cursor shape accordingly
+if !g:WSL
+    call system("xset -q")
+    if v:shell_error == 0 && !empty(system('command -v xprop'))
+        let curWindowClass = system("xprop -id $(xprop -root _NET_ACTIVE_WINDOW | cut -d ' ' -f 5) WM_CLASS")
+        if stridx(curWindowClass, '"Xfce4-terminal"') != -1 && filereadable("~/.config/xfce4/terminal/terminalrc")
+            " works but performs badly
+            if has("autocmd")
+                au InsertEnter,InsertChange *
+                            \ if v:insertmode == 'i' |
+                            \   silent execute "!sed -i.bak -e 's/TERMINAL_CURSOR_SHAPE_.*/TERMINAL_CURSOR_SHAPE_IBEAM/' ~/.config/xfce4/terminal/terminalrc" |
+                            \ elseif v:insertmode == 'r' |
+                            \   silent execute "!sed -i.bak -e 's/TERMINAL_CURSOR_SHAPE_.*/TERMINAL_CURSOR_SHAPE_UNDERLINE/' ~/.config/xfce4/terminal/terminalrc" |
+                            \ endif
+                au InsertLeave,VimLeave * silent execute "!sed -i.bak -e 's/TERMINAL_CURSOR_SHAPE_.*/TERMINAL_CURSOR_SHAPE_BLOCK/' ~/.config/xfce4/terminal/terminalrc"
+            endif
+        else
+            " most modern terminal emulators are VTE-compatible
+            let &t_SI = "\<Esc>[6 q"
+            let &t_SR = "\<Esc>[4 q"
+            let &t_EI = "\<Esc>[2 q"
+        endif
+    endif
+endif
+
+
+"%%%%%% Behaviour %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+syntax enable
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set wildmode=list,full
+set wildmenu
+set showmode
+set conceallevel=2
+
+set fileencodings=utf8,cp936,gb18030,big5
+set cinoptions=>s,e0,n0,f0,{0,}0,^0,Ls,:s,=s,l0,b0,g0,hs,N-s,E0,ps,t0,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0
+set backspace=indent,eol,start
+
+" always open help in new tab
+cabbrev h tab help
+
+" turn off syntax for diff mode only
+if &diff
+    syntax off
+else
+    syntax on
+endif
+
+" turn on english grammar checking for some file type
+autocmd FileType tex,markdown,text set spell
+set spelllang=en_us,cjk
+
+" autoremove trailing whitespace when saving
+autocmd BufWritePre * %s/\s\+$//e
+
+" search ctags in parent dir if not found
+set tag=./.tags;,.tags;
+
+" autodetect filetype
+autocmd BufRead,BufNewFile *.ASM setlocal filetype=asm
+autocmd BufRead,BufNewFile *.g setlocal filetype=antlr3
+autocmd BufRead,BufNewFile *.g4 setlocal filetype=antlr4
+autocmd BufRead,BufNewFile *.fl,*.flex,*.l,*.lm setlocal filetype=lex
+autocmd BufRead,BufNewFile *.y,*.ypp,*.ym setlocal filetype=yacc
+filetype plugin on
+
+" Start a remote server by default,
+" so that some plugin will work correctly (like vimtex reverse-search)
+if !g:WSL
+    call system("xset -q")
+    if v:shell_error == 0 &&
+                \ has('clientserver') &&
+                \ empty(v:servername) &&
+                \ exists('*remote_startserver')
+        call remote_startserver('VIM')
+    endif
+endif
+
+"%%%%%% Key Mappings %%%%%%%%%%%%%%%%%%%%%%%%%
+let g:mapleader = ';'
+let g:maplocalleader = ';'
+nnoremap <Leader><Leader> :
+
+if has('win32')
+    inoremap <C-S-v> <C-r>*<CR>
+endif
+
+" toggle paste mode
+set pastetoggle=<F1>
+
+" nerdTree toggle
+nnoremap <C-n> :NERDTreeTabsToggle<CR>
+
+" tagbar toggle
+" nnoremap <C-t> :TagbarToggle<CR>
+
+" vista toggle and search
+nnoremap <C-t> :Vista!!<CR>
+autocmd FileType vista,vista_kind nnoremap <buffer> <silent> / :<c-u>call vista#finder#fzf#Run()<CR>
+
+" context.vim toggle
+nnoremap <C-c> :ContextToggle<CR>
+
+" identGuide Show
+"nnoremap <C-\> <Plug>IndentGuidesToggle
+
+
+" DoxygenToolKit nnoremap
+nnoremap <S-m> :Dox<CR>
+
+" agit show
+nnoremap <C-g> :Agit<CR>
+
+" Fix Syntax error
+inoremap <C-s> <C-g>u<Esc>[s1z=`]a<C-g>u
+
+" file finder
+nnoremap <C-f> :e .<CR>
+
+" undo tree toggle
+nnoremap <Leader>u :UndotreeToggle<CR>
+
+" easy-align map
+nmap <Leader>a <Plug>(EasyAlign)
+xmap <Leader>a <Plug>(EasyAlign)
+
+" CtrlSF quick search
+nmap <Leader>/ <Plug>CtrlSFPrompt
+nmap <Leader>? <Plug>CtrlSFCCwordPath
+
+" rainbow parentheses toggle
+nnoremap <F9> :RainbowParenthesesLoadRound<CR>
+            \:RainbowParenthesesLoadSquare<CR>
+            \:RainbowParenthesesLoadBraces<CR>
+            \:RainbowParenthesesLoadChevrons<CR>
+nnoremap <F10> :RainbowParenthesesToggle<CR>
+
+" tab operation
+nnoremap <S-l> :tabn<CR>
+nnoremap <S-h> :tabp<CR>
+nnoremap <C-S-l> :tabm+1<CR>
+nnoremap <C-S-h> :tabm-1<CR>
+nnoremap <F4> <C-w>T
+nnoremap <F2> :tabnew<CR>
+nnoremap <F3> :tabclose<CR>
+
+" LeaderF map
+nmap <Leader>js <Plug>LeaderfGtagsSymbol
+nmap <Leader>jj <Plug>LeaderfGtagsGrep
+
+" use coc for jumps, replaces YouCompleteMe jumps and LeaderF jumps
+nmap <Leader>rr <Plug>(coc-refactor)
+nmap <Leader>jr <Plug>(coc-references)
+nmap <Leader>jd <Plug>(coc-definition)
+nmap <Leader>jD <Plug>(coc-declaration)
+
+" Coc Map, S-j, S-k for scroll, C-j, C-k for menu scroll
+" use Tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <S-j> pumvisible() ? "\<C-n>" : "\<S-j>"
+inoremap <silent><expr> <S-k> pumvisible() ? "\<C-p>" : "\<S-k>"
+
+if has('nvim')
+    inoremap <silent><expr> <C-Space> coc#refresh()
+else
+    inoremap <silent> <C-@> <C-r>=coc#refresh()<CR>
+endif
+inoremap <silent><nowait><expr> <C-j> pumvisible() ? "\<c-r>=coc#float#scroll(1)\<CR>" : "\<C-j>"
+inoremap <silent><nowait><expr> <C-k> pumvisible() ? "\<c-r>=coc#float#scroll(0)\<CR>" : "\<C-k>"
+vnoremap <silent><nowait><expr> <C-j> pumvisible() ? coc#float#scroll(1) : "\<C-j>"
+vnoremap <silent><nowait><expr> <C-k> pumvisible() ? coc#float#scroll(0) : "\<C-k>"
+nnoremap <silent><nowait><expr> <C-j> pumvisible() ? coc#float#scroll(1) : "\<C-j>"
+nnoremap <silent><nowait><expr> <C-k> pumvisible() ? coc#float#scroll(0) : "\<C-k>"
+
+" ctag goto definition/declaration
+nnoremap <Leader><C-]> <C-w><C-]><C-w>T
+
+" incsearch map
+nmap n  <Plug>(incsearch-nohl-n)
+nmap N  <Plug>(incsearch-nohl-N)
+nmap *  <Plug>(incsearch-nohl-*)
+nmap #  <Plug>(incsearch-nohl-#)
+nmap g* <Plug>(incsearch-nohl-g*)
+nmap g# <Plug>(incsearch-nohl-g#)
+nmap /  <Plug>(incsearch-forward)
+nmap ?  <Plug>(incsearch-backward)
+nmap g/ <Plug>(incsearch-stay)
+
+" easymotion
+nmap <Leader>  <Plug>(easymotion-prefix)
+nmap <Leader>s <Plug>(incsearch-nohl)<Plug>(easymotion-sn)
+nmap <Leader>S <Plug>(incsearch-nohl)<Plug>(easymotion-s)
+
+" vimtex
+autocmd Filetype tex        nmap <C-Q> <plug>(vimtex-doc-package)
+autocmd Filetype tex        nmap <Leader>h <plug>(vimtex-view)
+
+" auto highlight toggle
+nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
+
+" document query, requires zeal
+autocmd Filetype c          nnoremap <silent> <C-Q> :!command -v zeal && zeal "c:<cword>"          > /dev/null 2>&1 &<CR><CR>
+autocmd Filetype cpp        nnoremap <silent> <C-Q> :!command -v zeal && zeal "cpp:<cword>"        > /dev/null 2>&1 &<CR><CR>
+autocmd Filetype python     nnoremap <silent> <C-Q> :!command -v zeal && zeal "python:<cword>"     > /dev/null 2>&1 &<CR><CR>
+autocmd Filetype html       nnoremap <silent> <C-Q> :!command -v zeal && zeal "html:<cword>"       > /dev/null 2>&1 &<CR><CR>
+autocmd Filetype javascript nnoremap <silent> <C-Q> :!command -v zeal && zeal "javascript:<cword>" > /dev/null 2>&1 &<CR><CR>
+
+" dictionary query, requires qstardict
+nnoremap <S-Q> :!command -v qstardict && qstardict <cword> > /dev/null 2>&1 &<CR><CR>
+
+"%%%%%% Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+command! Gdb ConqueGdb
+"command! MarkdownToggle InstantMarkdownPreview
+command! MarkdownView InstantMarkdownPreview
+command! MarkdownStop InstantMarkdownStop
+command! AutoHighlightToggle :call AutoHighlightToggle()
+command! AF Autoformat
+command! -nargs=* Make make <args> | cwindow             "open quickfix after make automatically
+command! Todo noautocmd CtrlSF -C 0 -R TODO|FIXME|NOTE **
+command! HighlightSync syntax sync fromstart
+
+"%%%%%% Functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+" Auto highlight toggle
+function! AutoHighlightToggle()
+    let @/ = ''
+    if exists('#auto_highlight')
+        au! auto_highlight
+        augroup! auto_highlight
+        setl updatetime=4000
+        echo 'Highlight current word: off'
+        return 0
+    else
+        augroup auto_highlight
+            au!
+            au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
+        augroup end
+        setl updatetime=500
+        echo 'Highlight current word: ON'
+        return 1
+    endif
+endfunction
+
+" Auto fcitx toggle
+if has('unix') && !g:Termux
+    let g:input_toggle = 0
+    " toggle to en when exit insert move
+    function! Fcitx2en()
+        let s:input_status = system("fcitx-remote")
+        if s:input_status == 2
+            let g:input_toggle = 1
+            let l:a = system("fcitx-remote -c")
+        endif
+    endfunction
+
+    " toggle to cn when enter insert mode
+    function! Fcitx2zh()
+        let s:input_status = system("fcitx-remote")
+        if s:input_status != 2 && g:input_toggle == 1
+            let l:a = system("fcitx-remote -o")
+            let g:input_toggle = 0
+        endif
+    endfunction
+
+    set ttimeoutlen=100
+    "exit insert mode
+    autocmd InsertLeave * call Fcitx2en()
+    "enter insert mode
+    autocmd InsertEnter * call Fcitx2zh()
+endif
+
+" vimtex handler
+function! VimTexDocHandler(context)
+    call vimtex#doc#make_selection(a:context)
+    if !empty(a:context.selected)
+        execute '!texdoc' a:context.selected '&'
+    endif
+    return 1
+endfunction
+
+" redirect vim internal pager
+function! Redir(cmd, rng, start, end)
+    for win in range(1, winnr('$'))
+        if getwinvar(win, 'scratch')
+            execute win . 'windo close'
+        endif
+    endfor
+    if a:cmd =~ '^!'
+        let cmd = a:cmd =~' %'
+                    \ ? matchstr(substitute(a:cmd, ' %', ' ' . expand('%:p'), ''), '^!\zs.*')
+                    \ : matchstr(a:cmd, '^!\zs.*')
+        if a:rng == 0
+            let output = systemlist(cmd)
+        else
+            let joined_lines = join(getline(a:start, a:end), '\n')
+            let cleaned_lines = substitute(shellescape(joined_lines), "'\\\\''", "\\\\'", 'g')
+            let output = systemlist(cmd . " <<< $" . cleaned_lines)
+        endif
+    else
+        redir => output
+        execute a:cmd
+        redir END
+        let output = split(output, "\n")
+    endif
+    vnew
+    let w:scratch = 1
+    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+    call setline(1, output)
+endfunction
+command! -nargs=1 -complete=command -bar -range Redir silent call Redir(<q-args>, <range>, <line1>, <line2>)
+
+"%%%%%% Auto Commands %%%%%%%%%%%%%%%%%%%%%%%%
+
+" save fold when closing files and load when opening
+" au BufWinLeave ?* mkview 1
+" au BufWinEnter ?* silent loadview 1
+
+" vimtex bug, see https://github.com/lervag/vimtex/pull/1860

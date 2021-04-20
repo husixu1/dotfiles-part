@@ -1,0 +1,30 @@
+snippet bats "shebang" b
+#!/usr/bin/env bats
+endsnippet
+
+snippet test "Test case" b
+@test "${1:test something}" {
+    ${0::}
+}
+endsnippet
+
+snippet line "Test line" b
+[ "${lines[${1:0}]}" = "${2:some value}" ]
+endsnippet
+
+snippet output "Test output" b
+[ "$output" = "${1:foo: no such file 'nonexistent_filename'}" ]
+endsnippet
+
+snippet status "Test return status" b
+[ "$status" -eq ${1:0} ]
+endsnippet
+
+snippet run "Run wrapper" b
+run foo
+[ "$status" -eq ${1:0} ]
+endsnippet
+
+snippet print "Print something to terminal" b
+echo "# ${1:something}" >&3
+endsnippet
