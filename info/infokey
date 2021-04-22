@@ -1,22 +1,27 @@
-# info
-g       first-node
-G       last-node
-\mb     beginning-of-node
-\me     end-of-node
+#stop
+# ^ Stops default key bindings
+
+#info
+# ^ Key bindings for info windows
+
+^g       first-node
+^G       last-node
+g        beginning-of-node
+G        end-of-node
+
+# vim basic movement simulation
 j       next-line
 k       prev-line
 h       backward-char
 l       forward-char
 
-f       scroll-forward-page-only
-^f      scroll-forward-page-only
-\m\     scroll-forward-page-only
-z       scroll-forward-page-only-set-window
+w       forward-word
+b       backward-word
 
-b       scroll-backward-page-only
-^b      scroll-backward-page-only
-w       scroll-backward-page-only-set-window
+0       beginning-of-line
+$       end-of-line
 
+# scrolling
 ^j      down-line
 ^k      up-line
 
@@ -25,16 +30,25 @@ d       scroll-half-screen-down
 u       scroll-half-screen-up
 ^u      scroll-half-screen-up
 
+# index commands
+i       index-search
+I       virtual-index
+,       next-index-match
+
+# node commands
 ^n     next-node
 ^p     prev-node
 ^u     up-node
-'       last-node
+'      last-node
 ^t     top-node
 ^d     dir-node
 
 ^xg     goto-node
 I       goto-invocation-node
 
+# searching
+/       search
+?       search-backward
 n       search-next
 N       search-previous
 
@@ -44,14 +58,14 @@ N       search-previous
 ^]      select-reference-this-line
 ^o      history-node
 
-
 ^c      abort-key
 
-:h     get-info-help-node
+:h      get-info-help-node
 
 :q      quit
 
 #echo-area
+# ^ Echo area key beindings
 \mh     echo-area-backward
 \ml     echo-area-forward
 \m0     echo-area-beg-of-line
@@ -61,3 +75,9 @@ N       search-previous
 \mu     echo-area-abort
 ^v      echo-area-quoted-insert
 \mX     echo-area-kill-word
+
+#var
+# ^ Set default variables. No spaces around '=' sign
+
+scroll-behavior=Page Only
+nodeline=print
