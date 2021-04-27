@@ -17,7 +17,7 @@ if $ISROOT; then
         deps+=(gnu-tools git e:yay::f:install_yay)
     else
         log:error "yay: yay cannot be installed on $DISTRO"
-        exit 1
+        # fail silently
     fi
 else
     log:error "yay: yay cannot be installed in usermode."
