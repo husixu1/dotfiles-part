@@ -737,7 +737,7 @@ set tag=./.tags;,.tags;
 autocmd BufRead,BufNewFile *.ASM setlocal filetype=asm
 autocmd BufRead,BufNewFile *.g setlocal filetype=antlr3
 autocmd BufRead,BufNewFile *.g4 setlocal filetype=antlr4
-autocmd BufRead,BufNewFile *.fl,*.flex,*.l,*.lm setlocal filetype=lex
+autocmd BufRead,BufNewFile *.fl,*.flex,*.l,*.lm,*.lpp setlocal filetype=lex
 autocmd BufRead,BufNewFile *.y,*.ypp,*.ym setlocal filetype=yacc
 filetype plugin on
 
