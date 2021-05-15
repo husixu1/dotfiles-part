@@ -59,6 +59,9 @@ endfunction
 "%%%%%%%%% plugs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 call plug#begin('~/.vim/plugged')
 
+Plug 'embear/vim-localvimrc'
+" -------------------prelude
+" visual -------------------
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'vim-airline/vim-airline'
@@ -77,8 +80,8 @@ Plug 'guns/xterm-color-table.vim'
 "Plug 'kshenoy/vim-signature'                " TODO: replace with coc-bookmark?
 
 Plug 'wellle/context.vim'
-" visual -------------------
-" --------------- functional
+" --------------------visual
+" functional----------------
 
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
@@ -107,7 +110,6 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'mbbill/undotree'
 
 Plug 'cohama/agit.vim'
-Plug 'embear/vim-localvimrc'
 
 Plug 'Chiel92/vim-autoformat'
 Plug 'vim-scripts/DoxygenToolkit.vim', { 'for': 'c,cpp,python,javascript,java' }
@@ -401,6 +403,8 @@ let g:vista#renderer#icons = {
 let g:vista_executive_for = {
             \ 'yaml': 'coc',
             \ 'python': 'coc',
+            \ 'c': 'coc',
+            \ 'cpp': 'coc',
             \ }
 
 "%%%%%% ConqueGdb %%%%%%%%%%%%%%%%%%%%%%%%%%%%
