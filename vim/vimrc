@@ -709,7 +709,7 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 set smartindent
-set wildmode=list,full
+set wildmode=longest:full,full
 set wildmenu
 set showmode
 set conceallevel=2
