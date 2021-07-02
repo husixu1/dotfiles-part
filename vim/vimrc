@@ -846,12 +846,12 @@ if has('nvim')
 else
     inoremap <silent> <C-@> <C-r>=coc#refresh()<CR>
 endif
-inoremap <silent><nowait><expr> <C-j> pumvisible() ? "\<c-r>=coc#float#scroll(1)\<CR>" : "\<C-j>"
-inoremap <silent><nowait><expr> <C-k> pumvisible() ? "\<c-r>=coc#float#scroll(0)\<CR>" : "\<C-k>"
-vnoremap <silent><nowait><expr> <C-j> pumvisible() ? coc#float#scroll(1) : "\<C-j>"
-vnoremap <silent><nowait><expr> <C-k> pumvisible() ? coc#float#scroll(0) : "\<C-k>"
-nnoremap <silent><nowait><expr> <C-j> pumvisible() ? coc#float#scroll(1) : "\<C-j>"
-nnoremap <silent><nowait><expr> <C-k> pumvisible() ? coc#float#scroll(0) : "\<C-k>"
+inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<CR>" : "\<C-j>"
+inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<CR>" : "\<C-k>"
+vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
+nnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+nnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
 
 " ctag goto definition/declaration
 nnoremap <Leader><C-]> <C-w><C-]><C-w>T
