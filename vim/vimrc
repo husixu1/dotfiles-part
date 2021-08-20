@@ -721,6 +721,11 @@ set backspace=indent,eol,start
 " always open help in new tab
 cabbrev h tab help
 
+" disable annoying beeping in windows
+if has('win32')
+    set noerrorbells visualbell t_vb=
+endif
+
 " turn off syntax for diff mode only
 if &diff
     syntax off
