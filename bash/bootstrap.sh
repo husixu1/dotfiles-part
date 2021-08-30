@@ -16,7 +16,7 @@ deps=('git' 'e:bash::f:install_bash' "file:$HOME/.oh-my-bash::f:install_omb")
 export deps tags opts
 
 install_omb() {
-    git clone git://github.com/ohmybash/oh-my-bash.git ~/.oh-my-bash
+    git clone https://github.com/ohmybash/oh-my-bash.git ~/.oh-my-bash
 }
 
 install_bash() {
