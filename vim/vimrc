@@ -1000,5 +1000,3 @@ command! -nargs=1 -complete=command -bar -range Redir silent call Redir(<q-args>
 " save fold when closing files and load when opening
 " au BufWinLeave ?* mkview 1
 " au BufWinEnter ?* silent loadview 1
-
-" vimtex bug, see https://github.com/lervag/vimtex/pull/1860
