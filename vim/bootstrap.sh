@@ -14,43 +14,49 @@ declare -a tags=(
 declare -a deps
 declare -a opts=(ISROOT DISTRO CONF__vim__preset)
 
-if $ISROOT; then
-    # root installation
-    deps=('d:gnu-tools' 'd:bash' 'cmake' 'wget' 'curl' 'git' 'clang' 'global')
+if [[ "${CONF__vim__preset}" == server ]]; then
+    # We use a smaller set of dependencies for server mode installation
+    # to avoid permission issues.
+    deps=('d:bash' 'cmake' 'wget' 'curl' 'git' 'e:vim')
+else
+    if $ISROOT; then
+        # root installation
+        deps=('d:gnu-tools' 'd:bash' 'cmake' 'wget' 'curl' 'git' 'clang' 'global')
 
-    if [[ $DISTRO == arch ]]; then
-        deps+=(
-            'yay'
-            'ctags' 'lua' 'ruby' 'perl' 'tclsh::tcl' 'python2' 'python3::python'
-            'npm::npm' 'node::nodejs'
-            'e:vim::gvim'
-        )
-    elif [[ $DISTRO =~ ^debian ]]; then
-        # only vim-nox supports python
-        deps+=(
-            'ctags' 'lua' 'ruby' 'perl' 'tclsh::tcl'
-            'python2::python' 'python3::python3' 'npm::npm' 'node::nodejs'
-            'e:vim::vim-nox'
-        )
-    elif [[ $DISTRO == termux ]]; then
-        deps+=(
-            'ctags'
-            'lua54' 'ruby' 'perl' 'tclsh::tcl' 'python2' 'python3::python'
-            'node::nodejs'
-            'e:vim::vim vim-python'
+        if [[ $DISTRO == arch ]]; then
+            deps+=(
+                'yay'
+                'ctags' 'lua' 'ruby' 'perl' 'tclsh::tcl' 'python2' 'python3::python'
+                'npm::npm' 'node::nodejs'
+                'e:vim::gvim'
+            )
+        elif [[ $DISTRO =~ ^debian ]]; then
+            # only vim-nox supports python
+            deps+=(
+                'ctags' 'lua' 'ruby' 'perl' 'tclsh::tcl'
+                'python2::python' 'python3::python3' 'npm::npm' 'node::nodejs'
+                'e:vim::vim-nox'
+            )
+        elif [[ $DISTRO == termux ]]; then
+            deps+=(
+                'ctags'
+                'lua54' 'ruby' 'perl' 'tclsh::tcl' 'python2' 'python3::python'
+                'node::nodejs'
+                'e:vim::vim vim-python'
+            )
+        fi
+    else
+        deps=(
+            'd:gnu-tools d:bash'
+            'cmake::devel/cmake' 'wget::net/wget' 'curl::www/curl' 'git::devel/git'
+            'ctags::devel/exctags'
+            'e:vim::editors/vim'
+            'e:npm::lang/npm'
+            'e:nodejs::lang/nodejs'
+            'e:clang::lang/clang'
+            'e:ctags::devel/exctags'
         )
     fi
-else
-    deps=(
-        'd:gnu-tools d:bash'
-        'cmake::devel/cmake' 'wget::net/wget' 'curl::www/curl' 'git::devel/git'
-        'ctags::devel/exctags'
-        'e:vim::editors/vim'
-        'e:npm::lang/npm'
-        'e:nodejs::lang/nodejs'
-        'e:clang::lang/clang'
-        'e:ctags::devel/exctags'
-    )
 fi
 
 export deps tags opts
