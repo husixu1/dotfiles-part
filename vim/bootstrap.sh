@@ -35,7 +35,7 @@ if $ISROOT; then
     elif [[ $DISTRO == termux ]]; then
         deps+=(
             'ctags'
-            'lua' 'ruby' 'perl' 'tclsh::tcl' 'python2' 'python3::python'
+            'lua54' 'ruby' 'perl' 'tclsh::tcl' 'python2' 'python3::python'
             'node::nodejs'
             'e:vim::vim vim-python'
         )
