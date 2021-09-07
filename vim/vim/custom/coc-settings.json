@@ -1,4 +1,6 @@
 {
     // Use ALE for linting
-    "diagnostic.enable": false
+    "diagnostic.enable": false,
+    // Use ALE for linting
+    "pyright.disableDiagnostics": true
 }

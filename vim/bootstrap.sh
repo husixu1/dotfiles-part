@@ -12,7 +12,7 @@ declare -a tags=(
     app
 )
 declare -a deps
-declare -a opts=(ISROOT DISTRO)
+declare -a opts=(ISROOT DISTRO CONF__vim__preset)
 
 if $ISROOT; then
     # root installation
@@ -61,6 +61,10 @@ VIMDIR="$HOME/.vim"
 VIMRC="$HOME/.vimrc"
 
 bootstrap:install() {
+    # generate preset config. It'll be sourced by the vimrc file
+    echo "let g:preset = '${CONF__vim__preset:-desktop}'" >| \
+        "$THISDIR/vim/custom/bdm_config.vim"
+
     # link files
     Link "$THISDIR/vimrc" "$VIMRC"
     Link "$THISDIR/vim" "$VIMDIR"
