@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Start only when current session is xfce
+
+[[ $DESKTOP_SESSION =~ xfce && -x $(command -v quicktile) ]] && {
+    quicktile -d
+}
