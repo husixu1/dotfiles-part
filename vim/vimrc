@@ -166,11 +166,11 @@ Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}
 
 "Plug 'vim-jp/vim-cpp', { 'for': 'c,cpp' }
 " with c++11/14/17 support
-Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'c,cpp' }
-Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
-Plug 'mxw/vim-jsx', { 'for': 'javascript' }
-Plug 'mtscout6/vim-tagbar-css', { 'for': 'css' }
+Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'c,cpp'}
+Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do': 'npm install'}
+Plug 'mxw/vim-jsx', {'for': 'javascript'}
+Plug 'mtscout6/vim-tagbar-css', {'for': 'css'}
 " needs php in $PATH
 Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
 Plug 'lervag/vimtex', {'for': 'tex,latex'}
@@ -180,15 +180,16 @@ Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex,latex'}
 " needs npm install -g livedown
 "Plug 'shime/vim-livedown', { 'for': 'markdown'}
 " replaces vim-livedown, needs npm install -g instant-markdown-d
-Plug 'suan/vim-instant-markdown', { 'for': 'markdown' }
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+Plug 'neovimhaskell/haskell-vim', {'for': 'haskell'}
 " natural language grammar checker
 Plug 'rhysd/vim-grammarous'
-Plug 'sukima/vim-tiddlywiki', { 'for' : 'tiddlywiki'}
-Plug 'dylon/vim-antlr', { 'for' : 'antlr3,antlr4'}
+Plug 'sukima/vim-tiddlywiki', {'for' : 'tiddlywiki'}
+Plug 'dylon/vim-antlr', {'for' : 'antlr3,antlr4'}
 " flex and bison highlight support
-Plug 'justinmk/vim-syntax-extra', { 'for': 'yacc,lex' }
+Plug 'justinmk/vim-syntax-extra', {'for': 'yacc,lex'}
 Plug 'dag/vim-fish', {'for': 'fish'}
+Plug 'wgwoods/vim-systemd-syntax', {'for': 'systemd'}
 
 " ----------------------------------------------------------- language support
 " required
