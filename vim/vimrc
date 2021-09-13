@@ -617,7 +617,7 @@ endif
 
 " Appearence %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if has('gui_running')
-    if system == 'windows'
+    if b:system == 'windows'
         set guifont=FuraCode\ NF:h14,Fira\ Code,monospace
     else
         set guifont=Fira\ Code\ 14,monospace
