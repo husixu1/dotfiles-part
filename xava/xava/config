@@ -5,6 +5,7 @@
 
 # Accepts only non-negative values.
 ; framerate = 60
+framerate = 120
 
 # Keep the application in sync with the monitor to prevent tearing
 # It's generally recommended to keep it on, as different framerates may lead to unstable frametimes
@@ -17,6 +18,7 @@ vsync = -1
 # 'autosens' will attempt to balance the sensitivity to keep the amplitude of the bars
 # within a reasonable range
 ; autosens = true
+autosens = true
 
 # Manual sensitivity in %. Autosens must be turned off for this to take effect.
 # 200 means double height and so on. Accepts only non-negative values.
@@ -149,7 +151,8 @@ alignment = 'bottom'
 # Visual channels. Can be 'stereo' or 'mono'.
 # 'stereo' mirrors both channels with low frequencies in center.
 # 'mono' averages both channels and outputs left to right lowest to highest frequencies.
-channels = stereo
+; channels = stereo
+channels = mono
 
 
 [color]
@@ -181,11 +184,12 @@ gradient_color_2 = '#ff3399'
 
 # Percentage value for integral smoothing. Takes values from 0 - 100.
 # Higher values means smoother, but less precise. 0 to disable.
-integral = 92
+integral = 96
 
 # Disables or enables the so-called "Monstercat smoothing" with or without "waves". Set to 0 to disable.
-monstercat = 1.5
+monstercat = 4.0
 ; waves = 0
+waves = 1
 
 # Set gravity percentage for "drop off". Higher values means bars will drop faster.
 # Accepts only non-negative values. 50 means half gravity, 200 means double. Set to 0 to disable "drop off".
@@ -200,7 +204,7 @@ gravity = 50
 ; log = 1.55
 
 # Average out the value of each odd bar (just like the monstercat visualizer)
-; oddoneout = true
+;oddoneout = true
 oddoneout = false
 
 # Balances the eq towards higher or lower frequencies
@@ -209,9 +213,11 @@ oddoneout = false
 
 # Adjusts the input buffer size (in samples, calculated by 2^input_size)
 ; input_size = 12
+input_size = 16
 
 # Adjusts the FFT buffer size (calculated by 2^fft_size)
 ; fft_size = 14
+fft_size = 16
 
 
 [shadow]
