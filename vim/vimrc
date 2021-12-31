@@ -688,6 +688,7 @@ endif
 " turn off syntax for diff mode only
 if &diff
     syntax off
+    set wrap
 else
     syntax on
 endif
