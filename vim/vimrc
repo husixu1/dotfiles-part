@@ -531,7 +531,7 @@ let g:instant_markdown_mathjax = 1
 " AutoFormat %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 " disable fallback to vim indent
 let g:autoformat_autoindent = 0
-let g:formatdef_clang = '"clang-format -style=file"'
+let g:formatdef_clang = '"clang-format -style=file --assume-filename=".expand("%:t")'
 let g:formatters_c = ['clang']
 let g:formatters_cpp = ['clang']
 let g:formatters_cuda = ['clang']
