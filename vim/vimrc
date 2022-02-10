@@ -484,9 +484,9 @@ let g:ctrlsf_default_view_mode = 'normal'
 let g:gutentags_project_root = ['.git', '.svn', '.hg', '.project']
 
 if b:system == 'windows'
-    let s:vim_tags = expand($localappdata . '/vim/tags')
+    let s:vim_tags = expand($temp . '/vim')
 else
-    let s:vim_tags = expand($HOME . '/.cache/vim/tags')
+    let s:vim_tags = expand('/tmp/vim')
 endif
 
 if !isdirectory(s:vim_tags)

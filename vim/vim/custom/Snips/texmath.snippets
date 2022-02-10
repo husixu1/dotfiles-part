@@ -73,16 +73,16 @@ symbolMap = {
 'nprece': r'\npreceq',      'nsucc': r'\nsucceq',
 'll': r'\ll',               'gg': r'\gg',
 'lll': r'\lll',             'ggg': r'\ggg',
-'sub': r'\subset',          'sup': r'\supset',
-'nsub': r'\not\subset',     'nsup': r'\not\supset',
-'sube': r'\subseteq',       'supe': r'\supseteq',
-'nsube': r'\not\subseteq',  'nsupe': r'\not\supseteq',
-'sqsub': r'\sqsubset',      'sqsup': r'\sqsupset',
-'sqsube': r'\sqsubseteq',   'sqsupe': r'\sqsupseteq',
+'subs': r'\subset',         'sups': r'\supset',
+'nsubs': r'\not\subset',    'nsups': r'\not\supset',
+'subse': r'\subseteq',      'supse': r'\supseteq',
+'nsubse': r'\not\subseteq', 'nsupse': r'\not\supseteq',
+'sqsubs': r'\sqsubset',     'sqsups': r'\sqsupset',
+'sqsubse': r'\sqsubseteq',  'sqsupse': r'\sqsupseteq',
 # Relation Operators 2
 'eq': r'=',                 'ne': r'\neq',
 'doteq': r'\doteq',         'equiv': r'\equiv',
-'appr': r'\approx',          'cong': r'\cong',
+'appr': r'\approx',         'cong': r'\cong',
 'simeq': r'\simeq',         'sim': r'\sim',
 'prop': r'\propto',
 # Relation Operators 3
@@ -100,8 +100,11 @@ symbolMap = {
 'ast': r'\ast',             'star': r'\star',
 'dag': r'\dagger',          'ddag': r'\ddagger',
 'cap': r'\cap',             'cup': r'\cup',
+'bcap': r'\bigcap',         'bcup': r'\bigcup',
 'sqcap': r'\sqcap',         'sqcup': r'\sqcup',
+'bsqcap': r'\bigsqcap',     'bsqcup': r'\bigsqcup',
 'vee': r'\vee',             'wed': r'\wedge',
+'bvee': r'\bigvee',         'bwed': r'\bigwedge',
 'triu': r'\bigtriangleup',  'trid': r'\bigtriangledown',
 'tril': r'\triangleleft',   'trir': r'\triangleright',
 'bcric': r'\bigcric',       'bul': r'\bullet',
@@ -156,6 +159,10 @@ symbolMap = {
 'all': r'\forall',          'vep': r'\varepsilon',
 'bot': r'\bot',             'top': r'\top',
 
+# ad-hoc symbols (TODO: dedup them)
+'to': r'\to',               'To': r'\Rightarrow',
+'gets': r'\gets',           'Gets': r'\LeftArrow',
+
 # TODO: complete this map and write a python program to generate snippets
 # from this map, instead of using dynamic expansion (for the sake of ycm)
 }
@@ -168,11 +175,17 @@ priority -1
 
 # symbols ===========================
 # Append a space after the symbol to avoid connection with the subsequent
-# character. But if subsequence character is also a symbol, we remove that space
+# character. But if the last character a symbol, we remove the space.
+# If the symbol is not found in the symbol table, we simply assume that this is
+# a tex math command and replace ';' with '\'
 context "isMath()"
 snippet "\s*(;[a-zA-Z]+)" "symbol" ri
-`!p snip.rv = symbolMap[match.group(1)[1:]] + ' ' if \
-        match.group(1)[1:] in symbolMap else match.group(0)`
+`!p snip.rv =                                                           \
+    symbolMap[match.group(1)[1:]]                                       \
+        + (' ' if symbolMap[match.group(1)[1:]][-1].isalnum() else '')  \
+    if match.group(1)[1:] in symbolMap                                  \
+    else '\\' + match.group(1)[1:]                                      \
+        + (' ' if match.group(1)[-1].isalnum() else '')                 `
 endsnippet
 # For debugging
 # `!p snip.rv = "-->" + match.group(0)` + "<--"
@@ -428,6 +441,12 @@ context "isMath()"
 post_jump "remove_trailing_ws(snip)"
 snippet "\s*;cal" "mathcal" ri
 \mathcal{${1:${VISUAL}}}$0
+endsnippet
+
+context "isMath()"
+post_jump "remove_trailing_ws(snip)"
+snippet "\s*;scr" "mathscr" ri
+\mathscr{${1:${VISUAL}}}$0
 endsnippet
 
 # environments ======================
