@@ -1,11 +1,49 @@
 extends texmath
 
 global !p
+import shutil
 
 # from https://github.com/SirVer/ultisnips/issues/913
 # fixes individual "\item" indent
 def fix_indent(snip):
     vim.eval('feedkeys("\<c-f>")')
+
+def _create_edit_figtex(figure_dir, figure_stem):
+    svg_path = figure_dir + '/' + figure_stem + '.svg'
+    # create svg file and open for edit
+    if not os.path.isfile(svg_path):
+        # create directory for svg
+        if not os.path.isdir(figure_dir):
+            os.mkdir(figure_dir)
+        # create svg file
+        os.system(
+            'inkscape '
+            '--actions="file-new:$HOME/.vim/custom/inkscape_template.svg; '
+            'export-filename:' + svg_path + '; export-do"')
+    # open for edit
+    os.system('inkscape ' + svg_path + " >/dev/null 2>&1")
+
+def _convert_figtex(figure_dir, figure_stem):
+    svg_path = figure_dir + '/' + figure_stem + '.svg'
+    pdf_path = figure_dir + '/' + figure_stem + '.pdf'
+    os.system('inkscape --actions="export-filename:' + pdf_path + ';'
+        'export-type:pdf;export-latex;export-area-drawing;export-do" ' +
+        svg_path)
+
+figtex_re = re.compile(r'^\s*\\import{(.*)/}{(.*)\.pdf_tex}')
+def re_edit_figtex(snip):
+    print(snip)
+    result = figtex_re.match(snip.visual_content)
+    if result is not None:
+        result = result.groups()
+        _create_edit_figtex(result[0], result[1])
+        _convert_figtex(result[0], result[1])
+
+def edit_figtex(snip):
+    if snip.tabstop == 0 and shutil.which('inkscape') is not None:
+        figure_dir = snip.tabstops[3].current_text
+        _create_edit_figtex(figure_dir, snip.tabstops[4].current_text)
+        _convert_figtex(figure_dir, snip.tabstops[4].current_text)
 
 endglobal
 
@@ -93,7 +131,7 @@ endsnippet
 
 snippet "b(egin)?" "begin{} / end{}" br
 \begin{${1:something}}
-	${0:${VISUAL}}
+    ${0:${VISUAL}}
 \end{$1}
 endsnippet
 
@@ -105,51 +143,57 @@ endsnippet
 
 snippet table "Table environment" b
 \begin{table}[${1:htpb}]
-	\centering
-	\caption{${2:caption}}
-	\label{tab:${3:label}}
-	\begin{${4:t}${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${5:c}}
-	\toprule
-	${5/(?<=.)(c|l|r)|./(?1: & )/g} \\\\
-	\bottomrule
-	\end{$4${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}
+    \centering
+    \caption{${2:caption}}
+    \label{tab:${3:label}}
+    \begin{${4:t}${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${5:c}}
+    \toprule
+    ${5/(?<=.)(c|l|r)|./(?1: & )/g} \\\\
+    \bottomrule
+    \end{$4${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}
 \end{table}
 endsnippet
 
 snippet fig "Figure environment" b
 \begin{figure}[${2:htpb}]
-	\centering
-	\includegraphics[width=${3:0.8}\linewidth]{${4:name.ext}}
-	\caption{${4/(\w+)\.\w+/\u$1/}$0}
-	\label{fig:${4/(\w+)\.\w+/$1/}}
-\end{figure}
+    \centering
+    \includegraphics[width=${3:0.8}\linewidth]{${4:name.ext}}
+    \caption{${5:${4/(.*\/)?(\w+)(\.\w+)?/\u$2/}}}
+    \label{fig:${4/(.*\/)?(\w+)(\.\w+)?/$2/}}
+\end{figure}$0
 endsnippet
 
+post_jump "edit_figtex(snip)"
 snippet figtex "Vector figure" b
 \begin{figure}[${1:htpb}]
     \centering
     \def\svgwidth{${2:0.8}\linewidth}
-    \import{${3:.}/}{${4:name.pdf_tex}}
-    \caption{${4/(\w+)\.\w+/\u$1/}$0}
-    \label{fig:${4/(\w+)\.\w+/$1/}}
-\end{figure}
+    \import{${3:./res}/}{${4:name}.pdf_tex}
+    \caption{${5:${4/(\w+)/\u$1/}}}
+    \label{fig:${4/(\w+)/$1/}}
+\end{figure}$0
+endsnippet
+
+pre_expand "re_edit_figtex(snip)"
+snippet E "Edit existing figure" iw
+${VISUAL}$0
 endsnippet
 
 snippet enum "Enumerate" b
 \begin{enumerate}
-	\item $0
+    \item $0
 \end{enumerate}
 endsnippet
 
 snippet item "Itemize" b
 \begin{itemize}
-	\item $0
+    \item $0
 \end{itemize}
 endsnippet
 
 snippet desc "Description" b
 \begin{description}
-	\item[$1] $0
+    \item[$1] $0
 \end{description}
 endsnippet
 
@@ -164,3 +208,5 @@ snippet part "Part" b
 
 $0
 endsnippet
+
+# vim: set expandtab:
