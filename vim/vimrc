@@ -549,7 +549,8 @@ let g:formatdef_latexindent = '"latexindent -l=" . $HOME . "/.vim/custom/latex_i
 let g:vimtex_doc_handlers = ['VimTexDocHandler']
 let g:vimtex_view_general_viewer = 'okular'
 let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
-let g:vimtex_view_general_options_latexmk = '--unique'
+" deprecated
+" let g:vimtex_view_general_options_latexmk = '--unique'
 
 " disable all mappings, to avoid conflict with other plugins
 let g:vimtex_mappings_enabled = 0
