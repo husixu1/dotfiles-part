@@ -162,6 +162,7 @@ symbolMap = {
 # ad-hoc symbols (TODO: dedup them)
 'to': r'\to',               'To': r'\Rightarrow',
 'gets': r'\gets',           'Gets': r'\LeftArrow',
+'ds': r'\displaystyle',
 
 # TODO: complete this map and write a python program to generate snippets
 # from this map, instead of using dynamic expansion (for the sake of ycm)
@@ -208,6 +209,12 @@ snippet md "math display" i
 \[
     ${1:${VISUAL}}
 \]$0
+endsnippet
+
+context "not isMath()"
+post_jump "remove_trailing_ws(snip)"
+snippet mid "math inline display-style" i
+\(\displaystyle ${1:${VISUAL}}\)$0
 endsnippet
 
 context "not isMath()"
@@ -385,13 +392,13 @@ endsnippet
 context "isMath()"
 post_jump "remove_trailing_ws(snip)"
 snippet "\s*;uset" "underset" ri
-\underset{${1:${VISUAL}}}{$2}$0
+\underset{$1}{${2:${VISUAL}}}$0
 endsnippet
 
 context "isMath()"
 post_jump "remove_trailing_ws(snip)"
 snippet "\s*;oset" "overbrace" ri
-\overset{${1:${VISUAL}}}{$2}$0
+\overset{$1}{${2:${VISUAL}}}$0
 endsnippet
 
 # modifiers =========================
