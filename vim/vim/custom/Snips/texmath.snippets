@@ -374,7 +374,7 @@ endsnippet
 context "isMath()"
 post_jump "remove_trailing_ws(snip)"
 snippet "\s*;sq" "sqrt" ri
-\sqrt[${1:2}]{$2}$0
+\sqrt${1/.+/[/}${1}${1/.+/]/}{$2}$0
 endsnippet
 
 context "isMath()"

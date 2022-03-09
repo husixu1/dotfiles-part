@@ -4,11 +4,11 @@
 <svg
    width="210mm"
    height="297mm"
-   viewBox="0 0 793.70081 1122.5197"
+   viewBox="0 0 210 297"
    version="1.1"
-   id="svg8"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="inkscape_template.svg"
+   id="svg10"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04, custom)"
+   sodipodi:docname="default.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
-     id="defs2" />
+     id="defs10" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,18 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7071068"
-     inkscape:cx="417.9001"
-     inkscape:cy="421.43563"
-     inkscape:document-units="mm"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="503.47055"
+     inkscape:cy="494.92006"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      borderlayer="false"
      objecttolerance="10"
      gridtolerance="10"
      guidetolerance="10"
-     showguides="false"
-     inkscape:snap-bbox="false"
+     showguides="true"
+     inkscape:snap-bbox="true"
      inkscape:bbox-paths="true"
      inkscape:bbox-nodes="true"
      inkscape:snap-bbox-edge-midpoints="true"
@@ -45,22 +45,43 @@
      inkscape:snap-intersection-paths="true"
      inkscape:snap-smooth-nodes="true"
      inkscape:snap-midpoints="true"
-     inkscape:snap-nodes="false"
+     inkscape:snap-nodes="true"
      inkscape:snap-object-midpoints="true"
      inkscape:snap-center="true"
      inkscape:snap-text-baseline="true"
-     inkscape:snap-others="false"
+     inkscape:snap-others="true"
      inkscape:snap-grids="true"
      inkscape:snap-page="false"
      inkscape:snap-global="true"
      inkscape:snap-to-guides="true"
-     inkscape:pagecheckerboard="0">
+     inkscape:pagecheckerboard="false"
+     inkscape:lockguides="true">
+    <sodipodi:guide
+       position="0,297"
+       orientation="0,793.70079"
+       id="guide10"
+       inkscape:locked="true" />
+    <sodipodi:guide
+       position="210,297"
+       orientation="1122.5197,0"
+       id="guide11"
+       inkscape:locked="true" />
+    <sodipodi:guide
+       position="210,0"
+       orientation="0,-793.70079"
+       id="guide12"
+       inkscape:locked="true" />
+    <sodipodi:guide
+       position="0,0"
+       orientation="-1122.5197,0"
+       id="guide13"
+       inkscape:locked="true" />
     <inkscape:grid
        type="xygrid"
-       id="grid815" />
+       id="grid10" />
   </sodipodi:namedview>
   <metadata
-     id="metadata5">
+     id="metadata10">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -99,4 +120,8 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-87)" />
+  <inkscape:templateinfo>
+    <inkscape:name>default</inkscape:name>
+    <inkscape:date>2022-03-08</inkscape:date>
+  </inkscape:templateinfo>
 </svg>
