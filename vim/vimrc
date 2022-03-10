@@ -164,9 +164,8 @@ Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}
 "" polyglot causes conflict and harms performance. Use separate packages instead
 "Plug 'sheerun/vim-polyglot'
 
-"Plug 'vim-jp/vim-cpp', { 'for': 'c,cpp' }
-" with c++11/14/17 support
-Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'c,cpp'}
+" with c++11/14/17/20 highlight support
+Plug 'bfrg/vim-cpp-modern', {'for': 'c,cpp'}
 Plug 'pangloss/vim-javascript', {'for': 'javascript'}
 Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do': 'npm install'}
 Plug 'mxw/vim-jsx', {'for': 'javascript'}
