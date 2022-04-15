@@ -320,8 +320,8 @@ let g:ale_sign_style_error = "S✗"
 let g:ale_sign_style_warning = "S‼"
 
 let g:ale_linters = {
-            \ 'c': ['cc', 'clang', 'gcc', 'cppcheck'],
-            \ 'cpp': ['cc', 'clang', 'gcc', 'cppcheck'],
+            \ 'c': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
+            \ 'cpp': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
             \ 'javascript': ['eslint'],
             \ 'tex': ['chktex', 'lacheck'],
             \ }
@@ -622,6 +622,7 @@ if has('gui_running')
     else
         set guifont=Fira\ Code\ 14,monospace
     endif
+    set guioptions=
 endif
 
 colo wombat256
