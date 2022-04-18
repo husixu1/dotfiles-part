@@ -334,13 +334,14 @@ let g:ale_c_cc_options = '-Wall -Wextra -std=c17'
 let g:ale_c_gcc_options = '-Wall -Wextra -std=c17'
 let g:ale_c_clang_options = '-Wall -Wextra -std=c17'
 let g:ale_c_cppcheck_options = '--enable=all --inconclusive --std=c17'
-let g:ale_c_parse_compile_commands = 1
+let g:ale_c_clangcheck_options = '--extra-arg-before="--std=c17"'
 
 " C++ linter configs
 let g:ale_cpp_cc_options = '-Wall -Wextra -std=c++20'
 let g:ale_cpp_gcc_options = '-Wall -Wextra -std=c++20'
 let g:ale_cpp_clang_options = '-Wall -Wextra -std=c++20'
 let g:ale_cpp_cppcheck_options = '--enable=all --inconclusive --std=c++20'
+let g:ale_cpp_clangcheck_options = '--extra-arg-before="--std=c++20"'
 
 " Python linter configs
 let g:ale_python_mypy_options = '--ignore-missing-imports --python-executable=python'
@@ -595,6 +596,10 @@ let g:BASH_InsertFileHeader='no'
 let g:BASH_Executable='bash'
 let g:BASH_Debugger='ddd'
 let g:BASH_LoadMenus='no'
+
+" Vim-Grammarous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+" use system langaugetool
+let g:grammarous#languagetool_cmd = 'languagetool'
 
 " Vim-Fish %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 autocmd FileType fish compiler fish
