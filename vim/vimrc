@@ -7,6 +7,7 @@ if has('unix')
         call system("command -v termux-setup-storage")
         if v:shell_error == 0
             let b:system = 'termux'
+            let s:termux_prefix = '/data/data/com.termux/files/usr'
         endif
     endif
 elseif has('win32')
@@ -485,6 +486,8 @@ let g:gutentags_project_root = ['.git', '.svn', '.hg', '.project']
 
 if b:system == 'windows'
     let s:vim_tags = expand($temp . '/vim')
+elseif b:system == 'termux'
+    let s:vim_tags = s:termux_prefix . '/tmp/vim'
 else
     let s:vim_tags = expand('/tmp/vim')
 endif
