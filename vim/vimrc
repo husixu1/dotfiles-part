@@ -899,36 +899,39 @@ endfunction
 " Auto fcitx toggle
 if b:system == 'unix'
     let g:input_toggle = 0
+    let s:fcitx_remote_cmd = ""
     if executable("fcitx-remote")
         let s:fcitx_remote_cmd = "fcitx-remote"
     elseif executable("fcitx5-remote")
         let s:fcitx_remote_cmd = "fcitx5-remote"
     endif
 
-    " toggle to en when exit insert move
-    function! Fcitx2en()
-        let s:input_status = system(s:fcitx_remote_cmd)
-        echom s:input_status
-        if s:input_status == 2
-            let g:input_toggle = 1
-            let l:a = system(s:fcitx_remote_cmd . " -c")
-        endif
-    endfunction
+    if s:fcitx_remote_cmd
+        " toggle to en when exit insert move
+        function! Fcitx2en()
+            let s:input_status = system(s:fcitx_remote_cmd)
+            echom s:input_status
+            if s:input_status == 2
+                let g:input_toggle = 1
+                let l:a = system(s:fcitx_remote_cmd . " -c")
+            endif
+        endfunction
 
-    " toggle to cn when enter insert mode
-    function! Fcitx2zh()
-        let s:input_status = system(s:fcitx_remote_cmd)
-        if s:input_status != 2 && g:input_toggle == 1
-            let l:a = system(s:fcitx_remote_cmd . " -o")
-            let g:input_toggle = 0
-        endif
-    endfunction
+        " toggle to cn when enter insert mode
+        function! Fcitx2zh()
+            let s:input_status = system(s:fcitx_remote_cmd)
+            if s:input_status != 2 && g:input_toggle == 1
+                let l:a = system(s:fcitx_remote_cmd . " -o")
+                let g:input_toggle = 0
+            endif
+        endfunction
 
-    set ttimeoutlen=100
-    "exit insert mode
-    autocmd InsertLeave * call Fcitx2en()
-    "enter insert mode
-    autocmd InsertEnter * call Fcitx2zh()
+        set ttimeoutlen=100
+        "exit insert mode
+        autocmd InsertLeave * call Fcitx2en()
+        "enter insert mode
+        autocmd InsertEnter * call Fcitx2zh()
+    endif
 endif
 
 " vimtex handler
