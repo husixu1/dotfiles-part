@@ -31,8 +31,12 @@ def _convert_figtex(figure_dir, figure_stem):
         svg_path)
 
 figtex_re = re.compile(r'^\s*\\import{(.*)/}{(.*)\.pdf_tex}')
+def re_edit_figtex_context(snip):
+    if figtex_re.match(snip.visual_text):
+        return True
+    return False
+
 def re_edit_figtex(snip):
-    print(snip)
     result = figtex_re.match(snip.visual_content)
     if result is not None:
         result = result.groups()
@@ -180,6 +184,7 @@ snippet figtex "Vector figure" b
 \end{figure}$0
 endsnippet
 
+context "re_edit_figtex_context(snip)"
 pre_expand "re_edit_figtex(snip)"
 snippet E "Edit existing figure" iw
 ${VISUAL}$0
