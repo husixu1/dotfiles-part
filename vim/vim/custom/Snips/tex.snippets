@@ -19,16 +19,16 @@ def _create_edit_figtex(figure_dir, figure_stem):
         os.system(
             'inkscape '
             '--actions="file-new:$HOME/.vim/custom/inkscape_template.svg; '
-            'export-filename:' + svg_path + '; export-do"')
+            'export-filename:' + svg_path + '; export-do" >/dev/null 2>&1')
     # open for edit
-    os.system('inkscape ' + svg_path + " >/dev/null 2>&1")
+    os.system('inkscape ' + svg_path + ' >/dev/null 2>&1')
 
 def _convert_figtex(figure_dir, figure_stem):
     svg_path = figure_dir + '/' + figure_stem + '.svg'
     pdf_path = figure_dir + '/' + figure_stem + '.pdf'
     os.system('inkscape --actions="export-filename:' + pdf_path + ';'
         'export-type:pdf;export-latex;export-area-drawing;export-do" ' +
-        svg_path)
+        svg_path + ' >/dev/null 2>&1')
 
 figtex_re = re.compile(r'^\s*\\import{(.*)/}{(.*)\.pdf_tex}')
 def re_edit_figtex_context(snip):
