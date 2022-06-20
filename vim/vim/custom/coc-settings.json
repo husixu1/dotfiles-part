@@ -1,6 +1,9 @@
 {
-    // Use ALE for linting
-    "diagnostic.enable": false,
-    // Use ALE for linting
-    "pyright.disableDiagnostics": true
+    "diagnostic.enable": true,
+    // Delegate linting message to Ale.
+    "diagnostic.displayByAle": true,
+    // Use coc's pyright. It's more accurate than ale's
+    "pyright.disableDiagnostics": false,
+    // Use ale's cland instead of coc's
+    "clangd.disableDiagnostics": true
 }

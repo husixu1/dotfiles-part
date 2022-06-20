@@ -119,7 +119,7 @@ if g:preset == 'desktop'
     Plug 'neoclide/coc.nvim', {
                 \ 'branch': 'release', 'do': function('UpdateCoc') }
 
-    " fusion ultisnips, auto-pairs and ycm
+    " fusion ultisnips, auto-pairs and coc.nvim
     Plug 'husixu1/vim-fusiontab'
 endif
 
@@ -155,6 +155,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 "Plug 'junegunn/fzf.vim'
 " replaces fzf.vim, requires gtags (Gnu Global), python-pygments
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+Plug 'Yggdroot/LeaderF-marks'
 
 " this plugin causes bug when used inside .pyenv/versions subdirectories
 Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}
@@ -218,9 +219,9 @@ let g:NERDTreeLimitedSyntax = 1
 " auto install extensions
 let g:coc_global_extensions = [
             \ 'coc-marketplace',
-            \ 'coc-calc', 'coc-cmake', 'coc-clangd', 'coc-css',
-            \ 'coc-java', 'coc-json', 'coc-julia', 'coc-lua',
-            \ 'coc-pyright', 'coc-sh', 'coc-fish', 'coc-sql', 'coc-svg',
+            \ 'coc-calc', 'coc-cmake', 'coc-clangd', 'coc-html', 'coc-css',
+            \ 'coc-pyright', 'coc-java', 'coc-json', 'coc-julia', 'coc-lua',
+            \ 'coc-sh', 'coc-fish', 'coc-vimlsp', 'coc-sql', 'coc-svg',
             \ 'coc-tsserver', 'coc-yaml', 'coc-xml',
             \ 'coc-vimtex', 'coc-ultisnips']
 let g:coc_config_home = $HOME . '/.vim/custom'
@@ -302,7 +303,7 @@ let g:indent_guides_exclude_filetypes = [
 let g:minimap_show='<NOP>'
 let g:minimap_update='<NOP>'
 let g:minimap_close='<NOP>'
-let g:minimap_toggle='<Leader>m'
+let g:minimap_toggle='<Leader>M'
 
 " ALE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 "let g:ale_linters_explicit = 1
@@ -320,11 +321,13 @@ let g:ale_sign_info = "🛈"
 let g:ale_sign_style_error = "S✗"
 let g:ale_sign_style_warning = "S‼"
 
+" For python, pyright is provided by coc, thus no need to specify here
 let g:ale_linters = {
             \ 'c': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
             \ 'cpp': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
             \ 'javascript': ['eslint'],
             \ 'tex': ['chktex', 'lacheck'],
+            \ 'python': ['mypy'],
             \ }
 let g:ale_linter_aliases = {
             \ 'latex': 'tex'
@@ -500,8 +503,17 @@ let g:gutentags_ctags_extra_args = [
             \ '--tag-relative=yes',
             \ '--fields=+ailmnS',
             \ ]
-let g:gutentags_modules = [ 'ctags' , 'gtags_cscope' ]
-let gutentags_cache_dir = s:vim_tags.'/.LfCache/gtags'
+" let g:gutentags_modules = [ 'ctags', 'gtags_cscope' ]
+let g:gutentags_modules = [ 'ctags' ]
+let g:gutentags_cache_dir = s:vim_tags.'/.LfCache/gtags'
+" exclude unneded directories from ctags
+let g:gutentags_ctags_exclude = [ '*/data/*', '*/log/*' ]
+
+" GutenTags-Plus %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+" change focus to quickfix window after search
+let g:gutentags_plus_switch = 1
+" disable keymaps
+let g:gutentags_plus_nomap = 1
 
 " LeaderF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let g:Lf_ShortcutF = '<Leader>f'
@@ -513,8 +525,23 @@ let g:Lf_WorkingDirectoryMode = 'Ac'
 
 " vim-gutentags comatibility
 let g:Lf_CacheDirectory = s:vim_tags
-let g:Lf_GtagsAutoGenerate = 0
-let g:Lf_GtagsGutentags = 1
+" let g:Lf_GtagsAutoGenerate = 0
+" let g:Lf_GtagsGutentags = 1
+
+let g:Lf_GtagsAutoGenerate = 1
+let g:Lf_GtagsGutentags = 0
+let g:Lf_GtagsAutoUpdate = 1
+" 0 - gtags search the target files by itself.
+" 1 - the target files come from FileExplorer.
+" 2 - the target files come from g:Lf_GtagsfilesCmd.
+let g:Lf_GtagsSource = 2
+let g:Lf_GtagsfilesCmd = {
+    \ '.git': 'git ls-files --recurse-submodules',
+    \ '.hg': 'hg files',
+    \ 'default': 'find . -regextype egrep -iregex ' .
+    \    '".*\.(cmake|h|c|cc|hh|hpp|cpp|py|java|js|hs)"'
+    \ }
+let g:Lf_GtagsSkipUnreadable = 1
 
 "let g:Lf_ShowRelativePath = 0
 let g:Lf_HideHelp = 0
@@ -803,6 +830,8 @@ nnoremap <F3> :tabclose<CR>
 " LeaderF map
 nmap <Leader>js <Plug>LeaderfGtagsSymbol
 nmap <Leader>jj <Plug>LeaderfGtagsGrep
+nmap <leader>jR <Plug>LeaderfGtagsReference
+nmap <Leader>m :LeaderfMarks<CR>
 
 " use coc for jumps, replaces YouCompleteMe jumps and LeaderF jumps
 nmap <Leader>rr <Plug>(coc-refactor)
