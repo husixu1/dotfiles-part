@@ -24,16 +24,17 @@ def should_expand(snip, c, e):
 
     if snip.column < 0:
         return False
-    elif snip.column == 0 or \
-         space.match(chr(line[snip.column - 1])) or \
-         c != e or ( \
-            c == e and not alnum.match(chr(line[snip.column - 1])) or ( \
-                chr(line[snip.column - 1]) == c and \
-                snip.column < len(line) - 1 and \
-                chr(line[snip.column + 1]) == c)):
+    elif snip.column == 0 \
+            or space.match(chr(line[snip.column - 1])) \
+            or c != e \
+            or (c == e
+                and ((chr(line[snip.column - 1]) != c
+                      and not alnum.match(chr(line[snip.column - 1])))
+                     or (chr(line[snip.column - 1]) == c
+                         and snip.column < len(line) - 1
+                         and chr(line[snip.column + 1]) == c))):
         return True
     return False
-
 endglobal
 
 context "should_expand(snip, '(', ')')"
