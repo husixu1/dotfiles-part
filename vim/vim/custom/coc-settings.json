@@ -1,9 +1,13 @@
 {
     "diagnostic.enable": true,
-    // Delegate linting message to Ale.
+    // Send linting information to ALE
     "diagnostic.displayByAle": true,
-    // Use coc's pyright. It's more accurate than ale's
+    // Disable clangd linting
+    "clangd.disableDiagnostics": true,
+    // Enable pyright linting, to avoid starting two pyright instances
     "pyright.disableDiagnostics": false,
-    // Use ale's cland instead of coc's
-    "clangd.disableDiagnostics": true
+    // Override some severities
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportGeneralTypeIssues": "warning",
+    },
 }

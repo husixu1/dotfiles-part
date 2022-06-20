@@ -86,7 +86,6 @@ if g:preset == 'desktop'
     Plug 'powerline/fonts', { 'do': function('InstallFont') }
 endif
 
-" TODO: replace with coc-bookmark?
 "Plug 'kshenoy/vim-signature'
 
 " --------------------------------------------------------------------- visual
@@ -107,8 +106,9 @@ Plug 'husixu1/auto-pairs'
 if g:preset == 'desktop'
     "Plug 'vim-syntastic/syntastic'
 
-    " replaces syntastic
-    Plug 'dense-analysis/ale'   "replaces syntastic
+    " replaces syntastic. disable lsp functionality.
+    let g:ale_disable_lsp = 1
+    Plug 'dense-analysis/ale'
 
     "" needs manual compile if auto compile failed. requires compiledb
     "Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
@@ -156,6 +156,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " replaces fzf.vim, requires gtags (Gnu Global), python-pygments
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'Yggdroot/LeaderF-marks'
+Plug 'Freed-Wu/LeaderF-digraph'
 
 " this plugin causes bug when used inside .pyenv/versions subdirectories
 Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}
@@ -163,7 +164,7 @@ Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}
 " ----------------------------------------------------------------- functional
 " language support -----------------------------------------------------------
 
-"" polyglot causes conflict and harms performance. Use separate packages instead
+" polyglot causes conflict and harms performance. Use separate packages instead
 "Plug 'sheerun/vim-polyglot'
 
 " with c++11/14/17/20 highlight support
@@ -172,17 +173,18 @@ Plug 'pangloss/vim-javascript', {'for': 'javascript'}
 Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do': 'npm install'}
 Plug 'mxw/vim-jsx', {'for': 'javascript'}
 Plug 'mtscout6/vim-tagbar-css', {'for': 'css'}
+
 " needs php in $PATH
 Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
 Plug 'lervag/vimtex', {'for': 'tex,latex'}
 Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex,latex'}
 " shortcut conflict with coc.nvim
 "Plug 'vim-scripts/bash-support.vim', { 'for': 'sh,bash' }
-" needs npm install -g livedown
-"Plug 'shime/vim-livedown', { 'for': 'markdown'}
 " replaces vim-livedown, needs npm install -g instant-markdown-d
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'neovimhaskell/haskell-vim', {'for': 'haskell'}
+Plug 'neoclide/jsonc.vim'
+
 " natural language grammar checker
 Plug 'rhysd/vim-grammarous'
 Plug 'sukima/vim-tiddlywiki', {'for' : 'tiddlywiki'}
@@ -199,8 +201,8 @@ filetype plugin indent on
 
 " NerdTree %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let g:NERDTreeDirArrows = 1
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
 
 " devices using termux usually have a small screen...
 if b:system == 'termux'
@@ -218,7 +220,7 @@ let g:NERDTreeLimitedSyntax = 1
 " Coc.nvim %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 " auto install extensions
 let g:coc_global_extensions = [
-            \ 'coc-marketplace',
+            \ 'coc-marketplace', 'coc-lists',
             \ 'coc-calc', 'coc-cmake', 'coc-clangd', 'coc-html', 'coc-css',
             \ 'coc-pyright', 'coc-java', 'coc-json', 'coc-julia', 'coc-lua',
             \ 'coc-sh', 'coc-fish', 'coc-vimlsp', 'coc-sql', 'coc-svg',
@@ -321,13 +323,13 @@ let g:ale_sign_info = "🛈"
 let g:ale_sign_style_error = "S✗"
 let g:ale_sign_style_warning = "S‼"
 
-" For python, pyright is provided by coc, thus no need to specify here
+" For python, pyright is provided by coc, thus no need to enable in ale
 let g:ale_linters = {
             \ 'c': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
             \ 'cpp': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
             \ 'javascript': ['eslint'],
             \ 'tex': ['chktex', 'lacheck'],
-            \ 'python': ['mypy'],
+            \ 'python': ['mypy', 'pylint'],
             \ }
 let g:ale_linter_aliases = {
             \ 'latex': 'tex'
@@ -348,7 +350,10 @@ let g:ale_cpp_cppcheck_options = '--enable=all --inconclusive --std=c++20'
 let g:ale_cpp_clangcheck_options = '--extra-arg-before="--std=c++20"'
 
 " Python linter configs
-let g:ale_python_mypy_options = '--ignore-missing-imports --python-executable=python'
+let g:ale_python_mypy_options =
+            \ '--ignore-missing-imports --python-executable=python'
+let g:ale_python_pylint_options =
+            \ "--init-hook='import sys; sys.path.append(\".\")'"
 
 " AutoPairs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let g:AutoPairsSetKeymap = 0 " Let UltiSnips hadle paring, to get better experience
@@ -832,12 +837,16 @@ nmap <Leader>js <Plug>LeaderfGtagsSymbol
 nmap <Leader>jj <Plug>LeaderfGtagsGrep
 nmap <leader>jR <Plug>LeaderfGtagsReference
 nmap <Leader>m :LeaderfMarks<CR>
+nmap <leader>S :LeaderfBufTagAll<CR>
+nmap <leader>L :LeaderfSelf<CR>
 
 " use coc for jumps, replaces YouCompleteMe jumps and LeaderF jumps
 nmap <Leader>rr <Plug>(coc-refactor)
 nmap <Leader>jr <Plug>(coc-references)
 nmap <Leader>jd <Plug>(coc-definition)
 nmap <Leader>jD <Plug>(coc-declaration)
+nmap <leader>s :CocList symbols<CR>
+nmap <leader>l :CocList<CR>
 
 " Coc Map, S-j, S-k for scroll, C-j, C-k for menu scroll
 " use Tab for trigger completion with characters ahead and navigate.
@@ -872,8 +881,8 @@ nmap g/ <Plug>(incsearch-stay)
 
 " easymotion
 nmap <Leader>  <Plug>(easymotion-prefix)
-nmap <Leader>s <Plug>(incsearch-nohl)<Plug>(easymotion-sn)
-nmap <Leader>S <Plug>(incsearch-nohl)<Plug>(easymotion-s)
+nmap <Leader>g <Plug>(incsearch-nohl)<Plug>(easymotion-sn)
+nmap <Leader>G <Plug>(incsearch-nohl)<Plug>(easymotion-s)
 
 " vimtex
 autocmd Filetype tex        nmap <C-Q> <plug>(vimtex-doc-package)
