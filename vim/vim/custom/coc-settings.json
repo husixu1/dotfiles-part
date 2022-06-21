@@ -1,4 +1,16 @@
 {
+    // General settings ------------------------------------------------------
+    "refactor.saveToFile": false,
+    "list.insertMappings": {
+        "<Tab>": "do:togglemode"
+    },
+    "list.normalMappings": {
+        "<Tab>": "do:togglemode",
+        "<CR>": "do:chooseaction"
+    },
+
+
+    // Linter settings -------------------------------------------------------
     "diagnostic.enable": true,
     // Send linting information to ALE
     "diagnostic.displayByAle": true,
