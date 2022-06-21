@@ -6,8 +6,10 @@
     "clangd.disableDiagnostics": true,
     // Enable pyright linting, to avoid starting two pyright instances
     "pyright.disableDiagnostics": false,
+    // Store pyright.createtypestub <package> results here
+    "python.analysis.stubPath": ".stub",
     // Override some severities
     "python.analysis.diagnosticSeverityOverrides": {
-        "reportGeneralTypeIssues": "warning",
-    },
+        "reportGeneralTypeIssues": "warning"
+    }
 }
