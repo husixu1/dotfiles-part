@@ -110,6 +110,7 @@ Plug 'haya14busa/incsearch.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'farmergreg/vim-lastplace'
 Plug 'mbbill/undotree'
+Plug 'tpope/vim-fugitive'
 Plug 'cohama/agit.vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'vim-scripts/DoxygenToolkit.vim', {
@@ -133,6 +134,7 @@ Plug 'lambdalisue/vim-pyenv', {'for': 'python,python3'}
 
 " C++11/14/17/20 highlight support
 Plug 'bfrg/vim-cpp-modern', {'for': 'c,cpp'}
+Plug 'vim-python/python-syntax', {'for':'py'}
 Plug 'pangloss/vim-javascript', {'for': 'javascript'}
 Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do': 'npm install'}
 Plug 'mxw/vim-jsx', {'for': 'javascript'}
@@ -486,12 +488,6 @@ let g:gutentags_cache_dir = s:vim_tags.'/.LfCache/gtags'
 " Exclude unneeded directories from ctags
 let g:gutentags_ctags_exclude = [ '*/data/*', '*/log/*' ]
 
-" GutenTags-Plus %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-" Change focus to quickfix window after search
-let g:gutentags_plus_switch = 1
-" Disable keymaps
-let g:gutentags_plus_nomap = 1
-
 " LeaderF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let g:Lf_ShortcutF = '<Leader>f'
 let g:Lf_ShortcutB = '<Leader>b'
@@ -517,6 +513,8 @@ let g:Lf_GtagsfilesCmd = {
     \    '".*\.(cmake|h|c|cc|hh|hpp|cpp|py|java|js|hs)"'
     \ }
 let g:Lf_GtagsSkipUnreadable = 1
+" Requires python-pygments installed
+let g:Lf_Gtagslabel = 'native-pygments'
 
 "   let g:Lf_ShowRelativePath = 0
 let g:Lf_HideHelp = 0
@@ -593,6 +591,9 @@ let g:vimtex_compiler_latexmk = {
             \ ],
             \}
 let $TEXMFHOME = $HOME . '/texmf'
+
+" Python-Syntax %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:python_highlight_all = 1
 
 " Tex-Conceal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let g:tex_conceal="abdgm"
@@ -805,7 +806,7 @@ nnoremap <F4> <C-w>T
 nnoremap <F2> :tabnew<CR>
 nnoremap <F3> :tabclose<CR>
 
-" LeaderF map
+" LeaderF map "TODO: gtags only applicable to c/cxx/java/yacc..., no python
 nmap <Leader>js <Plug>LeaderfGtagsSymbol
 nmap <Leader>jj <Plug>LeaderfGtagsGrep
 nmap <leader>jR <Plug>LeaderfGtagsReference
