@@ -638,6 +638,7 @@ if has('gui_running')
 endif
 
 colo wombat256
+
 set cursorline
 "   set cursorcolumn
 set number
@@ -911,19 +912,17 @@ endfunction
 " Auto fcitx toggle
 if b:system == 'unix'
     let g:input_toggle = 0
-    let s:fcitx_remote_cmd = ""
     if executable("fcitx-remote")
         let s:fcitx_remote_cmd = "fcitx-remote"
     elseif executable("fcitx5-remote")
         let s:fcitx_remote_cmd = "fcitx5-remote"
     endif
 
-    if s:fcitx_remote_cmd
+    if exists("s:fcitx_remote_cmd")
         " Toggle to en when exit insert move
         function! Fcitx2en()
-            let s:input_status = system(s:fcitx_remote_cmd)
-            echom s:input_status
-            if s:input_status == 2
+            let s:input_status = trim(system(s:fcitx_remote_cmd))
+            if s:input_status == '2'
                 let g:input_toggle = 1
                 let l:a = system(s:fcitx_remote_cmd . " -c")
             endif
@@ -932,7 +931,7 @@ if b:system == 'unix'
         " Toggle to cn when enter insert mode
         function! Fcitx2zh()
             let s:input_status = system(s:fcitx_remote_cmd)
-            if s:input_status != 2 && g:input_toggle == 1
+            if s:input_status != '2' && g:input_toggle == 1
                 let l:a = system(s:fcitx_remote_cmd . " -o")
                 let g:input_toggle = 0
             endif
@@ -940,7 +939,11 @@ if b:system == 'unix'
 
         set ttimeoutlen=100
         "exit insert mode
-        autocmd InsertLeave * call Fcitx2en()
+        if exists('##InsertLeavePre')
+            au InsertLeavePre * call Fcitx2en()
+        else
+            au InsertLeave * call Fcitx2en()
+        endif
         "enter insert mode
         autocmd InsertEnter * call Fcitx2zh()
     endif
