@@ -2,3 +2,4 @@ vim/autoload
 vim/plugged
 vim/spell
 vim/custom/bdm_config.vim
+vim/sessions
