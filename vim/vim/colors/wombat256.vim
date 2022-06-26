@@ -72,7 +72,7 @@ hi! link CursorColumn   CursorLine
 " Diff colors
 hi DiffAdd                              ctermbg=236     cterm=bold                          guibg=#303030
 hi DiffChange                           ctermbg=236                                         guibg=#303030
-hi DiffDelete           ctermfg=9       ctermbg=NONE    cterm=strikethrough guifg=#ff0000   guibg=NONE      gui=strikethrough
+hi DiffDelete           ctermfg=9       ctermbg=NONE    cterm=NONE          guifg=#ff0000   guibg=NONE      gui=strikethrough
 hi DiffText             ctermfg=39      ctermbg=236     cterm=bold          guifg=#00afff   guibg=#303030   gui=bold
 
 " Plugin-related colors
