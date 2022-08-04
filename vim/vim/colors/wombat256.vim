@@ -76,6 +76,10 @@ hi DiffDelete           ctermfg=9       ctermbg=NONE    cterm=NONE          guif
 hi DiffText             ctermfg=39      ctermbg=236     cterm=bold          guifg=#00afff   guibg=#303030   gui=bold
 
 " Plugin-related colors
+hi! link CocPum                         Pmenu
+hi! link CocMenuSel                     PmenuSel
+hi! link CocFloatDividingLine           Pmenu
+
 hi YcmErrorSign                         ctermbg=169
 hi YcmWarningSign                       ctermbg=192
 hi YcmErrorSection                      ctermbg=134

@@ -833,8 +833,8 @@ nmap <leader>l :CocList<CR>
 
 " Coc Map, S-j, S-k for scroll, C-j, C-k for menu scroll.
 " Use Tab for trigger completion with characters ahead and navigate.
-inoremap <silent><expr> <S-j> pumvisible() ? "\<C-n>" : "\<S-j>"
-inoremap <silent><expr> <S-k> pumvisible() ? "\<C-p>" : "\<S-k>"
+inoremap <silent><expr> <S-j> coc#pum#visible() ? coc#pum#next(1) : "\<S-j>"
+inoremap <silent><expr> <S-k> coc#pum#visible() ? coc#pum#prev(1) : "\<S-k>"
 
 if has('nvim')
     inoremap <silent><expr> <C-Space> coc#refresh()
