@@ -882,7 +882,7 @@ autocmd Filetype html       nnoremap <silent> <C-Q> :!command -v zeal && zeal "h
 autocmd Filetype javascript nnoremap <silent> <C-Q> :!command -v zeal && zeal "javascript:<cword>" > /dev/null 2>&1 &<CR><CR>
 
 " Dictionary query, requires qstardict
-nnoremap <S-Q> :!command -v qstardict && qstardict <cword> > /dev/null 2>&1 &<CR><CR>
+nnoremap <S-Q> :!command -v goldendict && goldendict <cword> > /dev/null 2>&1 &<CR><CR>
 
 " Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 command! Gdb ConqueGdb
