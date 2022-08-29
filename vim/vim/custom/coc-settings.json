@@ -9,6 +9,9 @@
         "<CR>": "do:chooseaction"
     },
 
+    // Disable inlay hints ---------------------------------------------------
+    "inlayHint.filetypes": [],
+
 
     // Linter settings -------------------------------------------------------
     "diagnostic.enable": true,
