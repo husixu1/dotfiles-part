@@ -94,6 +94,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'husixu1/auto-pairs'
+Plug 'tommcdo/vim-exchange'
 
 if g:preset == 'desktop'
     let g:ale_disable_lsp = 1
@@ -121,6 +122,7 @@ Plug 'vim-scripts/a.vim'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'alx741/vinfo'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'chrisbra/unicode.vim'
 " Requires gtags (Gnu Global), python-pygments
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'Yggdroot/LeaderF-marks'
@@ -328,8 +330,9 @@ let g:ale_linters = {
             \ 'cpp': ['cc', 'clang', 'gcc', 'cppcheck', 'clangcheck'],
             \ 'javascript': ['eslint'],
             \ 'tex': ['chktex', 'lacheck'],
-            \ 'python': ['mypy', 'pylint'],
+            \ 'python': ['pylint'],
             \ }
+" 'python': ['mypy', 'pylint'],
 let g:ale_linter_aliases = {
             \ 'latex': 'tex'
             \ }
