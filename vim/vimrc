@@ -142,10 +142,9 @@ Plug 'mxw/vim-jsx', {'for': 'javascript'}
 Plug 'mtscout6/vim-tagbar-css', {'for': 'css'}
 " Needs php in $PATH
 Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
 Plug 'lervag/vimtex', {'for': 'tex,latex'}
 Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex,latex'}
-" Replaces vim-livedown, needs npm install -g instant-markdown-d
-Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'neovimhaskell/haskell-vim', {'for': 'haskell'}
 Plug 'neoclide/jsonc.vim'
 " Natural language grammar checker
@@ -531,12 +530,35 @@ let g:Lf_WindowHeight = 0.30
 let g:Lf_StlSeparator = { 'left': '', 'right': '' }
 let g:Lf_SpinSymbols = ['🌘', '🌗', '🌖', '🌕', '🌔', '🌓', '🌒', '🌑']
 
-" Instant-markdown %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-let g:instant_markdown_slow = 1
-let g:instant_markdown_autostart = 0
-let g:instant_markdown_allow_unsafe_content = 1
-let g:instant_markdown_allow_external_content = 1
-let g:instant_markdown_mathjax = 1
+" Markdown-preview %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip = ''
+let g:mkdp_browser = ''
+let g:mkdp_echo_preview_url = 0
+let g:mkdp_browserfunc = ''
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0,
+    \ 'toc': {}
+    \ }
+let g:mkdp_markdown_css = ''
+let g:mkdp_highlight_css = ''
+let g:mkdp_page_title = '「${name}」'
+let g:mkdp_filetypes = ['markdown']
+let g:mkdp_theme = 'dark'
 
 " AutoFormat %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 " Disable fallback to vim indent
@@ -888,8 +910,6 @@ nnoremap <S-Q> :!command -v goldendict && goldendict <cword> > /dev/null 2>&1 &<
 
 " Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 command! Gdb ConqueGdb
-command! MarkdownView InstantMarkdownPreview
-command! MarkdownStop InstantMarkdownStop
 command! AutoHighlightToggle :call AutoHighlightToggle()
 command! AF Autoformat
 command! Todo noautocmd CtrlSF -C 0 -R TODO|FIXME|NOTE **
