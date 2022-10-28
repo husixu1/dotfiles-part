@@ -30,7 +30,7 @@ def _convert_figtex(figure_dir, figure_stem):
         'export-type:pdf;export-latex;export-area-drawing;export-do" ' +
         svg_path + ' >/dev/null 2>&1')
 
-figtex_re = re.compile(r'^\s*\\import{(.*)/}{(.*)\.pdf_tex}')
+figtex_re = re.compile(r'^.*\\import{(.*)/}{(.*)\.pdf_tex}')
 def re_edit_figtex_context(snip):
     if figtex_re.match(snip.visual_text):
         return True
