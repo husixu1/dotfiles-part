@@ -26,5 +26,7 @@
     // Override some severities
     "python.analysis.diagnosticSeverityOverrides": {
         "reportGeneralTypeIssues": "warning"
-    }
+    },
+    // Avoid pyright warnings for untyped libraries
+    "python.analysis.useLibraryCodeForTypes": false
 }
