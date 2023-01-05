@@ -8,6 +8,7 @@
         "<Tab>": "do:togglemode",
         "<CR>": "do:chooseaction"
     },
+    "suggest.noselect": true,
 
     // Disable inlay hints ---------------------------------------------------
     "inlayHint.filetypes": [],

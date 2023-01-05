@@ -155,6 +155,7 @@ Plug 'dylon/vim-antlr', {'for' : 'antlr3,antlr4'}
 Plug 'justinmk/vim-syntax-extra', {'for': 'yacc,lex'}
 Plug 'dag/vim-fish', {'for': 'fish'}
 Plug 'wgwoods/vim-systemd-syntax', {'for': 'systemd'}
+"Plug 'kovisoft/slimv', {'for': 'lisp'}
 
 " ----------------------------------------------------------- Language support
 " Graveyard (to commemorate the plugins I have used) -------------------------
@@ -631,6 +632,9 @@ let g:BASH_InsertFileHeader='no'
 let g:BASH_Executable='bash'
 let g:BASH_Debugger='ddd'
 let g:BASH_LoadMenus='no'
+
+" Slimv %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:slimv_leader = ','
 
 " Vim-Grammarous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 " Use system langaugetool
