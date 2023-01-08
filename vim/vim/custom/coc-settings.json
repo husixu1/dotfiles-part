@@ -11,8 +11,7 @@
     "suggest.noselect": true,
 
     // Disable inlay hints ---------------------------------------------------
-    "inlayHint.filetypes": [],
-
+    "inlayHint.enable": false,
 
     // Linter settings -------------------------------------------------------
     "diagnostic.enable": true,
