@@ -156,6 +156,8 @@ Plug 'justinmk/vim-syntax-extra', {'for': 'yacc,lex'}
 Plug 'dag/vim-fish', {'for': 'fish'}
 Plug 'wgwoods/vim-systemd-syntax', {'for': 'systemd'}
 "Plug 'kovisoft/slimv', {'for': 'lisp'}
+" General completion
+Plug 'Exafunction/codeium.vim'
 
 " ----------------------------------------------------------- Language support
 " Graveyard (to commemorate the plugins I have used) -------------------------
@@ -249,6 +251,8 @@ let g:airline#extensions#tabline#show_close_button = 0
 
 " ALE support
 let g:airline#extensions#ale#enabled = 1
+" Codeium support
+let g:airline_section_y = '{…}%3{codeium#GetStatusString()}'
 
 if b:system == 'unix' || b:system == 'termux'
     let g:airline_powerline_fonts = 1
@@ -637,6 +641,10 @@ let g:BASH_LoadMenus='no'
 " Slimv %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 let g:slimv_leader = ','
 
+" Codeium %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+let g:codeium_disable_bindings = 1
+let g:codeium_manual = v:true
+
 " Vim-Grammarous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 " Use system langaugetool
 let g:grammarous#languagetool_cmd = 'languagetool'
@@ -736,6 +744,10 @@ set ssop-=folds
 
 " Always open help in new tab
 cabbrev h tab help
+
+" Avoid scrambled termresponse from kitty.
+" See https://superuser.com/questions/553601
+set t_RV=
 
 " Disable annoying beeping in windows
 if has('win32')
@@ -865,11 +877,7 @@ nmap <leader>l :CocList<CR>
 inoremap <silent><expr> <S-j> coc#pum#visible() ? coc#pum#next(1) : "\<S-j>"
 inoremap <silent><expr> <S-k> coc#pum#visible() ? coc#pum#prev(1) : "\<S-k>"
 
-if has('nvim')
-    inoremap <silent><expr> <C-Space> coc#refresh()
-else
-    inoremap <silent> <C-@> <C-r>=coc#refresh()<CR>
-endif
+inoremap <silent><expr> <C-Space> coc#refresh()
 inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<CR>" : "\<C-j>"
 inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<CR>" : "\<C-k>"
 vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
@@ -912,6 +920,12 @@ autocmd Filetype javascript nnoremap <silent> <C-Q> :!command -v zeal && zeal "j
 
 " Dictionary query, requires qstardict
 nnoremap <S-Q> :!command -v goldendict && goldendict <cword> > /dev/null 2>&1 &<CR><CR>
+
+" Codeium general complete
+inoremap <Leader>a <Cmd>call codeium#Complete()<CR>
+inoremap <Leader>n <Cmd>call codeium#CycleCompletions(1)<CR>
+inoremap <Leader>p <Cmd>call codeium#CycleCompletions(-1)<CR>
+inoremap <script><silent><nowait><expr> <C-a> codeium#Accept()
 
 " Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 command! Gdb ConqueGdb
