@@ -754,13 +754,14 @@ if has('win32')
     set noerrorbells visualbell t_vb=
 endif
 
-" Turn off syntax for diff mode only
+" Turn off syntax for diff mode only. Force diff mode to wrap
 if &diff
     syntax off
     set wrap
 else
     syntax on
 endif
+autocmd VimEnter * if &diff | execute 'windo set wrap' | endif
 
 " Turn on english grammar checking for some file type
 autocmd FileType tex,markdown,text set spell
