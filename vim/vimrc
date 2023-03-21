@@ -695,8 +695,8 @@ set incsearch
 " Auto reload file after changed externally
 set autoread
 
-set foldmethod=syntax
-set foldlevel=0
+" Override with modeline if needed
+set foldmethod=marker
 set foldlevelstart=10
 
 " Load the doxygen syntax and use enhanced highlight
